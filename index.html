@@ -30,7 +30,8 @@
           <button type="button" class="pane-menu-option" data-pane="photos">PHOTOS</button>
         </div>
 
-        <section class="media-pane reels-pane" aria-label="Reels">
+        <section class="media-pane reels-pane is-loading" aria-label="Reels">
+          <div class="pane-loading" aria-hidden="true"><span>REELS</span></div>
           <div class="pane-scroll" data-scroll-pane="reels">
             <div id="reelsList" class="reels-list"></div>
           </div>
@@ -39,7 +40,8 @@
           </div>
         </section>
 
-        <section class="media-pane photos-pane" aria-label="Photos">
+        <section class="media-pane photos-pane is-loading" aria-label="Photos">
+          <div class="pane-loading" aria-hidden="true"><span>PHOTOS</span></div>
           <div class="photos-surface">
             <div class="pane-scroll" data-scroll-pane="photos">
               <div id="photosGrid" class="photos-grid"></div>

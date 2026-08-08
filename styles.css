@@ -1,3 +1,9 @@
+@property --progress {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
 :root {
   --pink: #FF3E9E;
   --pink-deep: #f53673;
@@ -127,6 +133,55 @@ video {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  container-type: inline-size;
+}
+
+.pane-loading {
+  position: absolute;
+  inset: -1px;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  background: var(--pink);
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.pane-loading.is-complete {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.media-pane.is-loading > :not(.pane-loading) {
+  visibility: hidden;
+}
+
+.pane-loading span,
+.pane-menu-option {
+  font-weight: 900;
+  font-size: 23cqw;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  transform: scaleY(1.25);
+  background-image: linear-gradient(
+    90deg,
+    var(--white) 0%,
+    var(--white) var(--progress),
+    rgba(255, 255, 255, 0.28) var(--progress),
+    rgba(255, 255, 255, 0.28) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  transition: --progress 0.25s ease;
+}
+
+@media (max-width: 760px) {
+  .pane-loading {
+    display: none;
+  }
 }
 
 .pane-scroll {
@@ -313,7 +368,6 @@ video {
   display: grid;
   justify-items: center;
   gap: 3px;
-  min-width: 50px;
   padding: 0;
   color: var(--white);
   border: 0;
@@ -579,15 +633,12 @@ video {
     display: grid;
     place-items: center;
     border: 0;
-    background: transparent;
-    color: var(--white);
-    font-size: 23cqw;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    background-color: transparent;
     cursor: pointer;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    transform: scaleY(1.25);
+  }
+
+  .pane-menu-option:disabled {
+    cursor: default;
   }
 
   .portfolio-page:has(.content-grid[data-active-pane]) .pane-back {

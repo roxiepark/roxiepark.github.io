@@ -202,7 +202,6 @@
     const image = document.createElement("img");
     image.src = item.src;
     image.alt = item.title || `PHOTO ${index + 1}`;
-    image.loading = "lazy";
     image.decoding = "async";
     image.addEventListener("error", markUnavailable);
 
@@ -253,7 +252,7 @@
 
     reelsList.replaceChildren(...reelItems);
     layoutPhotosColumns(1);
-    observeAutoplayVideos();
+    const refreshAutoplay = observeAutoplayVideos();
     snapPaneOnScrollEnd(".reels-pane .pane-scroll", reelsList, ".reel-card");
     snapPaneOnScrollEnd(".photos-pane .pane-scroll", photosGrid, ".photo-card", {
       topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0,
@@ -262,6 +261,109 @@
     syncCustomScrollbars();
     enablePhotosZoom();
     enablePaneTabs();
+    setupPaneLoader(
+      "reels",
+      ".reels-pane",
+      Array.from(reelsList.querySelectorAll("video")),
+      refreshAutoplay
+    );
+    setupPaneLoader(
+      "photos",
+      ".photos-pane",
+      Array.from(photosGrid.querySelectorAll("img, video")),
+      refreshAutoplay
+    );
+  }
+
+  const MIN_LOADING_MS = 2000;
+  const loadStart = performance.now();
+
+  function setupPaneLoader(paneName, paneSelector, mediaElements, refreshAutoplay) {
+    const paneEl = document.querySelector(paneSelector);
+    const loader = document.querySelector(`${paneSelector} .pane-loading`);
+    const menuOption = document.querySelector(`.pane-menu-option[data-pane="${paneName}"]`);
+
+    if (!loader && !menuOption) {
+      return;
+    }
+
+    function setProgress(percent) {
+      loader?.style.setProperty("--progress", `${percent}%`);
+      menuOption?.style.setProperty("--progress", `${percent}%`);
+    }
+
+    let isDone = false;
+    let rafId;
+
+    function tick() {
+      if (isDone) {
+        return;
+      }
+
+      const elapsed = performance.now() - loadStart;
+      setProgress(Math.min((elapsed / MIN_LOADING_MS) * 95, 95).toFixed(1));
+      rafId = requestAnimationFrame(tick);
+    }
+
+    rafId = requestAnimationFrame(tick);
+
+    function finish() {
+      const remaining = Math.max(MIN_LOADING_MS - (performance.now() - loadStart), 0);
+
+      window.setTimeout(() => {
+        isDone = true;
+        cancelAnimationFrame(rafId);
+        setProgress(100);
+
+        window.setTimeout(() => {
+          paneEl?.classList.remove("is-loading");
+          requestAnimationFrame(() => refreshAutoplay?.(paneEl));
+
+          if (loader) {
+            loader.classList.add("is-complete");
+            window.setTimeout(() => loader.remove(), 250);
+          }
+
+          if (menuOption) {
+            menuOption.disabled = false;
+          }
+        }, 260);
+      }, remaining);
+    }
+
+    if (!mediaElements.length) {
+      finish();
+      return;
+    }
+
+    const total = mediaElements.length;
+    let loadedCount = 0;
+
+    function registerLoaded() {
+      loadedCount += 1;
+
+      if (loadedCount >= total) {
+        finish();
+      }
+    }
+
+    mediaElements.forEach((el) => {
+      if (el.tagName === "IMG") {
+        if (el.complete) {
+          registerLoaded();
+        } else {
+          el.addEventListener("load", registerLoaded, { once: true });
+          el.addEventListener("error", registerLoaded, { once: true });
+        }
+      } else if (el.tagName === "VIDEO") {
+        if (el.readyState >= 1) {
+          registerLoaded();
+        } else {
+          el.addEventListener("loadedmetadata", registerLoaded, { once: true });
+          el.addEventListener("error", registerLoaded, { once: true });
+        }
+      }
+    });
   }
 
   function enablePaneTabs() {
@@ -274,7 +376,12 @@
     }
 
     menuOptions.forEach((option) => {
+      option.disabled = true;
       option.addEventListener("click", () => {
+        if (option.disabled) {
+          return;
+        }
+
         contentGrid.dataset.activePane = option.dataset.pane;
       });
     });
@@ -704,6 +811,17 @@
     );
 
     videos.forEach((video) => observer.observe(video));
+
+    return function refreshAutoplay(container) {
+      const scoped = container
+        ? videos.filter((video) => container.contains(video))
+        : videos;
+
+      scoped.forEach((video) => {
+        observer.unobserve(video);
+        observer.observe(video);
+      });
+    };
   }
 
   mount();
