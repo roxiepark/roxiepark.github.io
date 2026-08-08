@@ -187,12 +187,6 @@ video {
   transition: --progress 0.25s ease;
 }
 
-@media (max-width: 760px) {
-  .pane-loading {
-    display: none;
-  }
-}
-
 .pane-scroll {
   height: 100%;
   overflow-x: hidden;
@@ -631,13 +625,19 @@ video {
   }
 
   .media-pane {
-    display: none;
+    position: absolute;
+    inset: 0;
     height: 100%;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(200%);
   }
 
   .content-grid[data-active-pane="reels"] .reels-pane,
   .content-grid[data-active-pane="photos"] .photos-pane {
-    display: block;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
   }
 
   .pane-menu {
