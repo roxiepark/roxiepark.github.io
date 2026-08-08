@@ -13,6 +13,9 @@
   <body>
     <main class="portfolio-page" aria-label="Hyeyoung Park portfolio">
       <header class="site-header" aria-label="Portfolio contact">
+        <button type="button" class="pane-back" aria-label="Back to menu">
+          <img src="assets/icons/back.png" alt="" aria-hidden="true">
+        </button>
         <p>SM ENTERTAINMENT</p>
         <p class="contact-line">
           <span>HYEYOUNG PARK 1999.09.08</span>
@@ -22,6 +25,11 @@
       </header>
 
       <section class="content-grid" aria-label="Reels and photos">
+        <div class="pane-menu" aria-label="Choose reels or photos">
+          <button type="button" class="pane-menu-option" data-pane="reels">REELS</button>
+          <button type="button" class="pane-menu-option" data-pane="photos">PHOTOS</button>
+        </div>
+
         <section class="media-pane reels-pane" aria-label="Reels">
           <div class="pane-scroll" data-scroll-pane="reels">
             <div id="reelsList" class="reels-list"></div>

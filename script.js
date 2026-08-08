@@ -73,8 +73,7 @@
   function createIcon(name) {
     const icon = document.createElement("span");
     icon.className = `reel-action-icon reel-action-icon-${name}`;
-    icon.style.webkitMaskImage = `url(assets/icons/${name}.png)`;
-    icon.style.maskImage = `url(assets/icons/${name}.png)`;
+    icon.style.setProperty("--icon-mask", `url(assets/icons/${name}.png)`);
     icon.setAttribute("aria-hidden", "true");
     return icon;
   }
@@ -104,7 +103,7 @@
     const caption = document.createElement("p");
     const actions = document.createElement("div");
     const playIndicator = document.createElement("div");
-    const likeButton = createActionButton("heart", "Like reel", "010");
+    const likeButton = createActionButton("heart", "Like reel", "8210");
     const commentButton = createActionButton("comment", "Comment on reel", "3994");
     const shareButton = createActionButton("share", "Share reel", "1384");
 
@@ -257,10 +256,32 @@
     observeAutoplayVideos();
     snapPaneOnScrollEnd(".reels-pane .pane-scroll", reelsList, ".reel-card");
     snapPaneOnScrollEnd(".photos-pane .pane-scroll", photosGrid, ".photo-card", {
-      topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0
+      topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0,
+      shouldSnap: () => photosGrid.dataset.columns === "1"
     });
     syncCustomScrollbars();
     enablePhotosZoom();
+    enablePaneTabs();
+  }
+
+  function enablePaneTabs() {
+    const contentGrid = document.querySelector(".content-grid");
+    const menuOptions = Array.from(document.querySelectorAll(".pane-menu-option"));
+    const backButton = document.querySelector(".pane-back");
+
+    if (!contentGrid || !menuOptions.length) {
+      return;
+    }
+
+    menuOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        contentGrid.dataset.activePane = option.dataset.pane;
+      });
+    });
+
+    backButton?.addEventListener("click", () => {
+      delete contentGrid.dataset.activePane;
+    });
   }
 
   function enablePhotosZoom() {
@@ -354,6 +375,36 @@
 
     pane.addEventListener("touchend", endPinch, { passive: true });
     pane.addEventListener("touchcancel", endPinch, { passive: true });
+
+    const scrollArea = pane.querySelector(".pane-scroll");
+
+    pane.addEventListener("click", (event) => {
+      if (columns === 1) {
+        return;
+      }
+
+      const card = event.target.closest(".photo-card");
+
+      if (!card) {
+        return;
+      }
+
+      applyColumns(1);
+
+      if (!scrollArea) {
+        return;
+      }
+
+      const topOffset = parseFloat(getComputedStyle(photosGrid).paddingTop) || 0;
+      const scrollRect = scrollArea.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const targetTop = Math.max(
+        scrollArea.scrollTop + cardRect.top - scrollRect.top - topOffset,
+        0
+      );
+
+      scrollArea.scrollTo({ top: targetTop, behavior: "auto" });
+    });
 
     applyColumns(columns);
   }
