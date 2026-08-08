@@ -1,4 +1,4 @@
-# Hyeyoung Park Portfolio
+# Hyeyoung Park
 
 Static portfolio page for reels, photos, and camcorder videos.
 

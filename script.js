@@ -11,6 +11,8 @@
   };
   const videoExtensions = new Set(["mp4", "mov", "m4v", "webm", "ogv"]);
   const programmaticPauses = new WeakSet();
+  let reelsMuted = true;
+  const reelMuteControls = [];
 
   function getExtension(src = "") {
     const cleanSrc = src.split("?")[0].split("#")[0];
@@ -52,7 +54,6 @@
     video.setAttribute("aria-label", label);
     video.setAttribute("controlsList", "nodownload");
     video.dataset.autoplayWhenVisible = "true";
-    video.dataset.keepMuted = muted ? "true" : "false";
 
     if (item.poster) {
       video.poster = item.poster;
@@ -93,6 +94,41 @@
     return button;
   }
 
+  function createMuteButton(video) {
+    const button = document.createElement("button");
+    const icon = document.createElement("span");
+
+    button.type = "button";
+    button.className = "reel-action-button reel-action-mute";
+    icon.className = "reel-action-icon";
+    icon.setAttribute("aria-hidden", "true");
+    button.append(icon);
+
+    function syncState() {
+      video.muted = reelsMuted;
+      video.volume = reelsMuted ? 0 : 1;
+      icon.style.setProperty(
+        "--icon-mask",
+        `url(assets/icons/${reelsMuted ? "mute" : "unmute"}.png)`
+      );
+      button.setAttribute(
+        "aria-label",
+        reelsMuted ? "Unmute reel" : "Mute reel"
+      );
+    }
+
+    syncState();
+    reelMuteControls.push(syncState);
+
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      reelsMuted = !reelsMuted;
+      reelMuteControls.forEach((sync) => sync());
+    });
+
+    return button;
+  }
+
   function createReelOverlay(item, video, index) {
     const overlay = document.createElement("div");
     const meta = document.createElement("div");
@@ -103,6 +139,7 @@
     const caption = document.createElement("p");
     const actions = document.createElement("div");
     const playIndicator = document.createElement("div");
+    const muteButton = createMuteButton(video);
     const likeButton = createActionButton("heart", "Like reel", "8210");
     const commentButton = createActionButton("comment", "Comment on reel", "3994");
     const shareButton = createActionButton("share", "Share reel", "1384");
@@ -122,8 +159,9 @@
     avatar.append(avatarImage);
     copy.append(username, caption);
     meta.append(avatar, copy);
+    muteButton.classList.add("reel-mute-button");
     actions.append(likeButton, commentButton, shareButton);
-    overlay.append(meta, actions, playIndicator);
+    overlay.append(meta, actions, muteButton, playIndicator);
 
     likeButton.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -165,7 +203,8 @@
     card.className = "reel-card";
 
     const video = createVideo(item, item.title || `REEL ${index + 1}`, {
-      controls: false
+      controls: false,
+      muted: true
     });
     const overlay = createReelOverlay(item, video, index);
 
@@ -276,6 +315,7 @@
   }
 
   const MIN_LOADING_MS = 2000;
+  const PROGRESS_TAU_MS = 900;
   const loadStart = performance.now();
 
   function setupPaneLoader(paneName, paneSelector, mediaElements, refreshAutoplay) {
@@ -301,7 +341,8 @@
       }
 
       const elapsed = performance.now() - loadStart;
-      setProgress(Math.min((elapsed / MIN_LOADING_MS) * 95, 95).toFixed(1));
+      const eased = 95 * (1 - Math.exp(-elapsed / PROGRESS_TAU_MS));
+      setProgress(eased.toFixed(1));
       rafId = requestAnimationFrame(tick);
     }
 
@@ -734,14 +775,6 @@
     }
 
     function playAudibleVideo(video) {
-      if (video.dataset.keepMuted === "true") {
-        video.muted = true;
-        video.volume = 0;
-      } else {
-        video.muted = false;
-        video.volume = 1;
-      }
-
       video.play().catch(() => {
         video.dataset.autoplayBlocked = "true";
         const indicator = video
