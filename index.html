@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hyeyoung Park Portfolio</title>
+    <meta
+      name="description"
+      content="HYEYOUNG PARK short-form reels and photo portfolio."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="portfolio-page" aria-label="Hyeyoung Park portfolio">
+      <header class="site-header" aria-label="Portfolio contact">
+        <p>SM ENTERTAINMENT</p>
+        <p class="contact-line">
+          <span>HYEYOUNG PARK 1999.09.08</span>
+          <span>ROXIE2339@GMAIL.COM</span>
+        </p>
+        <p>+82 010-3994-1384</p>
+      </header>
+
+      <section class="content-grid" aria-label="Reels and photos">
+        <section class="media-pane reels-pane" aria-label="Reels">
+          <div class="pane-scroll" data-scroll-pane="reels">
+            <div id="reelsList" class="reels-list"></div>
+          </div>
+          <div class="custom-scrollbar" aria-hidden="true">
+            <span class="custom-scrollbar-thumb"></span>
+          </div>
+        </section>
+
+        <section class="media-pane photos-pane" aria-label="Photos">
+          <div class="photos-surface">
+            <div class="pane-scroll" data-scroll-pane="photos">
+              <div id="photosGrid" class="photos-grid"></div>
+            </div>
+          </div>
+          <div class="custom-scrollbar" aria-hidden="true">
+            <span class="custom-scrollbar-thumb"></span>
+          </div>
+        </section>
+      </section>
+
+      <footer class="site-footer" aria-label="SM Entertainment logo">
+        <img src="assets/logo.png" alt="SM Entertainment">
+      </footer>
+    </main>
+
+    <script src="media.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
