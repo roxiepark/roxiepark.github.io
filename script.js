@@ -263,13 +263,63 @@
     let railSettleTimer = 0;
     let suppressMainTimer = 0;
 
-    function mirrorMainToRailProgress() {
-      const maxRailScroll = Math.max(railEl.scrollWidth - railEl.clientWidth, 0);
-      const maxMainScroll = Math.max(scrollArea.scrollHeight - scrollArea.clientHeight, 0);
+    function mainScrollTargetForIndex(index) {
+      const card = getCard(index);
 
-      if (!maxRailScroll || !maxMainScroll) {
+      if (!card) {
+        return null;
+      }
+
+      const scrollRect = scrollArea.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+
+      return scrollArea.scrollTop + cardRect.top - scrollRect.top - topOffset();
+    }
+
+    function mirrorMainToRailProgress() {
+      const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
+
+      if (!buttons.length) {
         return;
       }
+
+      const railRect = railEl.getBoundingClientRect();
+      const railCenter = railRect.left + railRect.width / 2;
+      const centers = buttons.map((button) => {
+        const rect = button.getBoundingClientRect();
+        return rect.left + rect.width / 2;
+      });
+
+      let floorIndex = 0;
+      let frac = 0;
+
+      if (railCenter <= centers[0]) {
+        floorIndex = 0;
+        frac = 0;
+      } else if (railCenter >= centers[centers.length - 1]) {
+        floorIndex = centers.length - 1;
+        frac = 0;
+      } else {
+        for (let i = 0; i < centers.length - 1; i += 1) {
+          if (railCenter >= centers[i] && railCenter <= centers[i + 1]) {
+            floorIndex = i;
+            const span = centers[i + 1] - centers[i];
+            frac = span > 0 ? (railCenter - centers[i]) / span : 0;
+            break;
+          }
+        }
+      }
+
+      const ceilIndex = Math.min(floorIndex + 1, centers.length - 1);
+      const floorTarget = mainScrollTargetForIndex(floorIndex);
+      const ceilTarget = mainScrollTargetForIndex(ceilIndex);
+
+      if (floorTarget === null || ceilTarget === null) {
+        return;
+      }
+
+      const target = floorTarget + (ceilTarget - floorTarget) * frac;
+      const maxMainScroll = Math.max(scrollArea.scrollHeight - scrollArea.clientHeight, 0);
 
       suppressMain = true;
       window.clearTimeout(suppressMainTimer);
@@ -277,8 +327,7 @@
         suppressMain = false;
       }, 250);
 
-      const progress = railEl.scrollLeft / maxRailScroll;
-      scrollArea.scrollTop = progress * maxMainScroll;
+      scrollArea.scrollTop = Math.min(Math.max(target, 0), maxMainScroll);
     }
 
     function previewFromRail() {
