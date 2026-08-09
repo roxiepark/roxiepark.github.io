@@ -70,6 +70,44 @@
     railEl.replaceChildren(...buttons);
   }
 
+  function scrollCardIntoView(scrollArea, card, topOffset = 0) {
+    if (!scrollArea || !card) {
+      return;
+    }
+
+    const scrollRect = scrollArea.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const targetTop = Math.max(
+      scrollArea.scrollTop + cardRect.top - scrollRect.top - topOffset,
+      0
+    );
+
+    scrollArea.scrollTo({ top: targetTop, behavior: "smooth" });
+  }
+
+  function initThumbnailRail(options) {
+    const { railEl, scrollArea, getCard, topOffset = () => 0, beforeScroll } = options;
+
+    if (!railEl || !scrollArea) {
+      return;
+    }
+
+    railEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".thumbnail-rail-item");
+
+      if (!button || !railEl.contains(button)) {
+        return;
+      }
+
+      const index = Number(button.dataset.index);
+
+      beforeScroll?.();
+
+      const card = getCard(index);
+      scrollCardIntoView(scrollArea, card, topOffset());
+    });
+  }
+
   function markUnavailable(event) {
     const card = event.currentTarget.closest(".reel-card, .photo-card");
     if (card) {
@@ -394,8 +432,22 @@
       shouldSnap: () => photosGrid.dataset.columns === "1"
     });
     syncCustomScrollbars();
-    enablePhotosZoom();
+    const photosZoom = enablePhotosZoom();
     enablePaneTabs();
+
+    initThumbnailRail({
+      railEl: reelsRail,
+      scrollArea: document.querySelector(".reels-pane .pane-scroll"),
+      getCard: (index) => reelsList.children[index]
+    });
+
+    initThumbnailRail({
+      railEl: photosRail,
+      scrollArea: document.querySelector(".photos-pane .pane-scroll"),
+      getCard: (index) => photoCardElements[index],
+      topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0,
+      beforeScroll: () => photosZoom?.collapseToSingleColumn()
+    });
     setupPaneLoader(
       "reels",
       ".reels-pane",
@@ -644,6 +696,10 @@
     });
 
     applyColumns(columns);
+
+    return {
+      collapseToSingleColumn: () => applyColumns(1)
+    };
   }
 
   function snapPaneOnScrollEnd(paneSelector, list, cardSelector, options = {}) {
