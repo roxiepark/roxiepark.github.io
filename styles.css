@@ -11,13 +11,17 @@
   --white-soft: rgba(255, 255, 255, 0.78);
   --white-faint: rgba(255, 255, 255, 0.22);
   --shadow: rgba(138, 23, 65, 0.2);
-  --header-height: clamp(92px, 13dvh, 138px);
-  --footer-height: clamp(112px, 15dvh, 150px);
-  --content-height: min(72dvh, calc(100dvh - var(--header-height) - var(--footer-height)));
+  --vh-unit: 1svh;
+  --header-height: clamp(92px, calc(var(--vh-unit) * 13), 138px);
+  --footer-height: clamp(112px, calc(var(--vh-unit) * 15), 150px);
+  --content-height: min(
+    calc(var(--vh-unit) * 72),
+    calc(var(--vh-unit) * 100 - var(--header-height) - var(--footer-height))
+  );
   --footer-logo-width: clamp(172px, 18vw, 312px);
   --footer-visual-height: calc(var(--footer-logo-width) * 441 / 2000);
-  --footer-top: calc(100dvh - 16px - var(--footer-visual-height));
-  --content-top: calc(51dvh - (var(--content-height) / 2));
+  --footer-top: calc(var(--vh-unit) * 100 - 16px - var(--footer-visual-height));
+  --content-top: calc(var(--vh-unit) * 51 - (var(--content-height) / 2));
   --content-gap-top: calc(var(--content-top) - var(--header-height));
   --content-height-expanded: calc(
     var(--footer-top) - var(--content-gap-top) - var(--content-top)
@@ -234,7 +238,7 @@ video {
 }
 
 .photos-pane .pane-scroll {
-  scroll-padding-top: var(--photos-gap);
+  scroll-padding-top: 0;
 }
 
 .photos-pane .pane-scroll:has(.photos-grid[data-columns="2"]),

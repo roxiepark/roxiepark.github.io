@@ -1,4 +1,16 @@
 (function () {
+  function setViewportUnit() {
+    const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.documentElement.style.setProperty("--vh-unit", `${height / 100}px`);
+  }
+
+  setViewportUnit();
+  window.addEventListener("resize", setViewportUnit);
+  window.addEventListener("orientationchange", setViewportUnit);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", setViewportUnit);
+  }
+
   const media = window.portfolioMedia || {};
   const reels = Array.isArray(media.reels) ? media.reels : [];
   const photos = Array.isArray(media.photos) ? media.photos : [];
