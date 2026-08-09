@@ -138,6 +138,36 @@
     let activeIndex = -1;
     let suppressMain = false;
     let suppressRail = false;
+    let suppressMainClearTimer = 0;
+    let suppressRailClearTimer = 0;
+
+    const SUPPRESS_SETTLE_MS = 220;
+
+    function suppressMainScroll() {
+      suppressMain = true;
+      window.clearTimeout(suppressMainClearTimer);
+      suppressMainClearTimer = window.setTimeout(() => {
+        suppressMain = false;
+      }, SUPPRESS_SETTLE_MS);
+    }
+
+    function releaseMainSuppression() {
+      suppressMain = false;
+      window.clearTimeout(suppressMainClearTimer);
+    }
+
+    function suppressRailScroll() {
+      suppressRail = true;
+      window.clearTimeout(suppressRailClearTimer);
+      suppressRailClearTimer = window.setTimeout(() => {
+        suppressRail = false;
+      }, SUPPRESS_SETTLE_MS);
+    }
+
+    function releaseRailSuppression() {
+      suppressRail = false;
+      window.clearTimeout(suppressRailClearTimer);
+    }
 
     function highlight(index) {
       const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
@@ -161,11 +191,8 @@
         (buttonRect.left + buttonRect.width / 2) -
         (railRect.left + railRect.width / 2);
 
-      suppressRail = true;
+      suppressRailScroll();
       railEl.scrollTo({ left: targetScroll, behavior: "smooth" });
-      window.setTimeout(() => {
-        suppressRail = false;
-      }, 400);
     }
 
     function scrollMainToIndex(index) {
@@ -175,11 +202,8 @@
         return;
       }
 
-      suppressMain = true;
+      suppressMainScroll();
       scrollCardIntoView(scrollArea, card, topOffset());
-      window.setTimeout(() => {
-        suppressMain = false;
-      }, 400);
     }
 
     function setActive(index, { centerRail = false, scrollMain = false } = {}) {
@@ -245,15 +269,15 @@
 
     function updateFromMain() {
       mainFrame = 0;
-
-      if (suppressMain) {
-        return;
-      }
-
       setActive(closestCardIndexToTop(), { centerRail: true });
     }
 
-    function requestMainUpdate() {
+    function handleMainScroll() {
+      if (suppressMain) {
+        suppressMainScroll();
+        return;
+      }
+
       if (!mainFrame) {
         mainFrame = requestAnimationFrame(updateFromMain);
       }
@@ -261,7 +285,6 @@
 
     let railFrame = 0;
     let railSettleTimer = 0;
-    let suppressMainTimer = 0;
 
     function mainScrollTargetForIndex(index) {
       const card = getCard(index);
@@ -321,12 +344,7 @@
       const target = floorTarget + (ceilTarget - floorTarget) * frac;
       const maxMainScroll = Math.max(scrollArea.scrollHeight - scrollArea.clientHeight, 0);
 
-      suppressMain = true;
-      window.clearTimeout(suppressMainTimer);
-      suppressMainTimer = window.setTimeout(() => {
-        suppressMain = false;
-      }, 250);
-
+      suppressMainScroll();
       scrollArea.scrollTop = Math.min(Math.max(target, 0), maxMainScroll);
     }
 
@@ -355,6 +373,11 @@
     }
 
     function handleRailScroll() {
+      if (suppressRail) {
+        suppressRailScroll();
+        return;
+      }
+
       if (!railFrame) {
         railFrame = requestAnimationFrame(previewFromRail);
       }
@@ -363,8 +386,11 @@
       railSettleTimer = window.setTimeout(commitFromRail, 150);
     }
 
-    scrollArea.addEventListener("scroll", requestMainUpdate, { passive: true });
+    scrollArea.addEventListener("scroll", handleMainScroll, { passive: true });
     railEl.addEventListener("scroll", handleRailScroll, { passive: true });
+
+    scrollArea.addEventListener("pointerdown", releaseMainSuppression, { passive: true });
+    railEl.addEventListener("pointerdown", releaseRailSuppression, { passive: true });
 
     railEl.addEventListener("click", (event) => {
       const button = event.target.closest(".thumbnail-rail-item");
@@ -376,7 +402,7 @@
       setActive(Number(button.dataset.index), { centerRail: true, scrollMain: true });
     });
 
-    requestMainUpdate();
+    handleMainScroll();
   }
 
   function markUnavailable(event) {
