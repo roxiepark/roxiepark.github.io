@@ -121,40 +121,86 @@
     scrollArea.scrollTo({ top: targetTop, behavior: "smooth" });
   }
 
-  function initThumbnailRail(options) {
-    const { railEl, scrollArea, getCard, topOffset = () => 0, beforeScroll } = options;
+  function initRailSync(options) {
+    const {
+      railEl,
+      scrollArea,
+      getCard,
+      getCards,
+      indexOf,
+      topOffset = () => 0
+    } = options;
 
     if (!railEl || !scrollArea) {
       return;
     }
 
-    railEl.addEventListener("click", (event) => {
-      const button = event.target.closest(".thumbnail-rail-item");
+    let activeIndex = -1;
+    let suppressMain = false;
+    let suppressRail = false;
 
-      if (!button || !railEl.contains(button)) {
+    function highlight(index) {
+      const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
+
+      buttons.forEach((button) => {
+        button.classList.toggle("is-active", Number(button.dataset.index) === index);
+      });
+
+      return buttons[index];
+    }
+
+    function centerRailOnButton(button) {
+      if (!button) {
         return;
       }
 
-      const index = Number(button.dataset.index);
+      const railRect = railEl.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      const targetScroll =
+        railEl.scrollLeft +
+        (buttonRect.left + buttonRect.width / 2) -
+        (railRect.left + railRect.width / 2);
 
-      beforeScroll?.();
-
-      const card = getCard(index);
-      scrollCardIntoView(scrollArea, card, topOffset());
-    });
-  }
-
-  function initRailHighlightSync(options) {
-    const { scrollArea, railEl, getCards, indexOf } = options;
-
-    if (!scrollArea || !railEl) {
-      return;
+      suppressRail = true;
+      railEl.scrollTo({ left: targetScroll, behavior: "smooth" });
+      window.setTimeout(() => {
+        suppressRail = false;
+      }, 400);
     }
 
-    let frame = 0;
-    let lastActiveIndex = -1;
+    function scrollMainToIndex(index) {
+      const card = getCard(index);
 
-    function closestCardIndex() {
+      if (!card) {
+        return;
+      }
+
+      suppressMain = true;
+      scrollCardIntoView(scrollArea, card, topOffset());
+      window.setTimeout(() => {
+        suppressMain = false;
+      }, 400);
+    }
+
+    function setActive(index, { centerRail = false, scrollMain = false } = {}) {
+      if (index < 0 || index === activeIndex) {
+        return;
+      }
+
+      activeIndex = index;
+
+      const button = highlight(index);
+
+      if (centerRail) {
+        centerRailOnButton(button);
+      }
+
+      if (scrollMain) {
+        scrollMainToIndex(index);
+      }
+    }
+
+    function closestCardIndexToTop() {
       const cards = getCards();
 
       if (!cards.length) {
@@ -173,45 +219,78 @@
       return indexOf(closest);
     }
 
-    function update() {
-      frame = 0;
+    function closestButtonIndexToCenter() {
+      const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
 
-      const activeIndex = closestCardIndex();
+      if (!buttons.length) {
+        return -1;
+      }
 
-      if (activeIndex === lastActiveIndex) {
+      const railRect = railEl.getBoundingClientRect();
+      const railCenter = railRect.left + railRect.width / 2;
+      const closest = buttons.reduce(
+        (best, button) => {
+          const buttonRect = button.getBoundingClientRect();
+          const buttonCenter = buttonRect.left + buttonRect.width / 2;
+          const distance = Math.abs(buttonCenter - railCenter);
+          return distance < best.distance ? { button, distance } : best;
+        },
+        { button: buttons[0], distance: Infinity }
+      ).button;
+
+      return Number(closest.dataset.index);
+    }
+
+    let mainFrame = 0;
+
+    function updateFromMain() {
+      mainFrame = 0;
+
+      if (suppressMain) {
         return;
       }
 
-      lastActiveIndex = activeIndex;
+      setActive(closestCardIndexToTop(), { centerRail: true });
+    }
 
-      const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
-
-      buttons.forEach((button) => {
-        button.classList.toggle("is-active", Number(button.dataset.index) === activeIndex);
-      });
-
-      const activeButton = buttons[activeIndex];
-
-      if (activeButton) {
-        const railRect = railEl.getBoundingClientRect();
-        const buttonRect = activeButton.getBoundingClientRect();
-        const targetScroll =
-          railEl.scrollLeft +
-          (buttonRect.left + buttonRect.width / 2) -
-          (railRect.left + railRect.width / 2);
-
-        railEl.scrollTo({ left: targetScroll, behavior: "smooth" });
+    function requestMainUpdate() {
+      if (!mainFrame) {
+        mainFrame = requestAnimationFrame(updateFromMain);
       }
     }
 
-    function requestUpdate() {
-      if (!frame) {
-        frame = requestAnimationFrame(update);
+    let railFrame = 0;
+
+    function updateFromRail() {
+      railFrame = 0;
+
+      if (suppressRail) {
+        return;
+      }
+
+      setActive(closestButtonIndexToCenter(), { scrollMain: true });
+    }
+
+    function requestRailUpdate() {
+      if (!railFrame) {
+        railFrame = requestAnimationFrame(updateFromRail);
       }
     }
 
-    scrollArea.addEventListener("scroll", requestUpdate, { passive: true });
-    requestUpdate();
+    scrollArea.addEventListener("scroll", requestMainUpdate, { passive: true });
+    railEl.addEventListener("scroll", requestRailUpdate, { passive: true });
+
+    railEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".thumbnail-rail-item");
+
+      if (!button || !railEl.contains(button)) {
+        return;
+      }
+
+      setActive(Number(button.dataset.index), { centerRail: true, scrollMain: true });
+    });
+
+    requestMainUpdate();
   }
 
   function markUnavailable(event) {
@@ -540,35 +619,24 @@
       shouldSnap: () => photosGrid.dataset.columns === "1"
     });
     syncCustomScrollbars();
-    const photosZoom = enablePhotosZoom();
+    enablePhotosZoom();
     enablePaneTabs();
 
-    initThumbnailRail({
+    initRailSync({
       railEl: reelsRail,
       scrollArea: document.querySelector(".reels-pane .pane-scroll"),
-      getCard: (index) => reelsList.children[index]
-    });
-
-    initThumbnailRail({
-      railEl: photosRail,
-      scrollArea: document.querySelector(".photos-pane .pane-scroll"),
-      getCard: (index) => photoCardElements[index],
-      topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0,
-      beforeScroll: () => photosZoom?.collapseToSingleColumn()
-    });
-
-    initRailHighlightSync({
-      scrollArea: document.querySelector(".reels-pane .pane-scroll"),
-      railEl: reelsRail,
+      getCard: (index) => reelsList.children[index],
       getCards: () => Array.from(reelsList.children),
       indexOf: (card) => Array.from(reelsList.children).indexOf(card)
     });
 
-    initRailHighlightSync({
-      scrollArea: document.querySelector(".photos-pane .pane-scroll"),
+    initRailSync({
       railEl: photosRail,
+      scrollArea: document.querySelector(".photos-pane .pane-scroll"),
+      getCard: (index) => photoCardElements[index],
       getCards: () => Array.from(photosGrid.querySelector(".photos-column")?.children || []),
-      indexOf: (card) => photoCardElements.indexOf(card)
+      indexOf: (card) => photoCardElements.indexOf(card),
+      topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0
     });
     setupPaneLoader(
       "reels",
@@ -818,14 +886,6 @@
     });
 
     applyColumns(columns);
-
-    return {
-      collapseToSingleColumn: () => {
-        if (columns > 1) {
-          applyColumns(1);
-        }
-      }
-    };
   }
 
   function snapPaneOnScrollEnd(paneSelector, list, cardSelector, options = {}) {
