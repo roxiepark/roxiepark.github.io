@@ -439,7 +439,7 @@
       return mobileQuery.matches ? 2 : 3;
     }
 
-    let columns = minColumns;
+    let columns = maxColumns();
 
     function applyColumns(next) {
       columns = Math.min(Math.max(next, minColumns), maxColumns());

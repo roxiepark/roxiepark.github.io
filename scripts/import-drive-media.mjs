@@ -228,6 +228,25 @@ function buildMedia(items) {
     }
 
     if (
+      segments[0] === "사진" &&
+      isNumberedPhotoFolder(segments[1] || "") &&
+      segments.length >= 3 &&
+      item.mimeType !== folderMimeType &&
+      isVideo(item)
+    ) {
+      const source = videoSourceFor(item, "camcorder");
+      photos.push({
+        src: source.src,
+        poster: thumbnailUrl(item.id, "w1200"),
+        href: item.href,
+        provider: source.provider,
+        type: "video",
+        title: titleFor(item.name)
+      });
+      continue;
+    }
+
+    if (
       segments[0] === "영상" &&
       segments[1] === "캠코더 영상" &&
       item.mimeType !== folderMimeType &&

@@ -156,14 +156,16 @@ window.portfolioMedia = {
       "title": "1-4"
     },
     {
-      "src": "https://drive.google.com/thumbnail?id=1NrNGi3P3oR0tOrX1mem65rP5rdO21aj0&sz=w2000",
-      "href": "https://drive.google.com/file/d/1NrNGi3P3oR0tOrX1mem65rP5rdO21aj0/view?usp=drivesdk",
-      "type": "image",
+      "src": "assets/drive-videos/camcorder/1-5.mp4",
+      "poster": "https://drive.google.com/thumbnail?id=16hKkKkcvSmgEor7nQCRBvbeZCPUfNlZb&sz=w1200",
+      "href": "https://drive.google.com/file/d/16hKkKkcvSmgEor7nQCRBvbeZCPUfNlZb/view?usp=drivesdk",
+      "provider": "local",
+      "type": "video",
       "title": "1-5"
     },
     {
-      "src": "https://drive.google.com/thumbnail?id=1oItdLAJKkG7FhgcO_PQeZYQGGodXgkyS&sz=w2000",
-      "href": "https://drive.google.com/file/d/1oItdLAJKkG7FhgcO_PQeZYQGGodXgkyS/view?usp=drivesdk",
+      "src": "https://drive.google.com/thumbnail?id=1NrNGi3P3oR0tOrX1mem65rP5rdO21aj0&sz=w2000",
+      "href": "https://drive.google.com/file/d/1NrNGi3P3oR0tOrX1mem65rP5rdO21aj0/view?usp=drivesdk",
       "type": "image",
       "title": "1-6"
     },
@@ -174,8 +176,8 @@ window.portfolioMedia = {
       "title": "1-7"
     },
     {
-      "src": "https://drive.google.com/thumbnail?id=1PX0lmPQLphKeB3Vga-FD9ZRIDNYt3eEa&sz=w2000",
-      "href": "https://drive.google.com/file/d/1PX0lmPQLphKeB3Vga-FD9ZRIDNYt3eEa/view?usp=drivesdk",
+      "src": "https://drive.google.com/thumbnail?id=1oItdLAJKkG7FhgcO_PQeZYQGGodXgkyS&sz=w2000",
+      "href": "https://drive.google.com/file/d/1oItdLAJKkG7FhgcO_PQeZYQGGodXgkyS/view?usp=drivesdk",
       "type": "image",
       "title": "1-8"
     },
@@ -198,12 +200,12 @@ window.portfolioMedia = {
       "title": "2-3"
     },
     {
-      "src": "assets/drive-videos/camcorder/imgp0326-2.mp4",
+      "src": "assets/drive-videos/camcorder/2-4.mp4",
       "poster": "https://drive.google.com/thumbnail?id=1h0JG23dg4TRfnnVKbYpzSDa0UfEoYYZr&sz=w1200",
       "href": "https://drive.google.com/file/d/1h0JG23dg4TRfnnVKbYpzSDa0UfEoYYZr/view?usp=drivesdk",
       "provider": "local",
       "type": "video",
-      "title": "IMGP0326 2"
+      "title": "2-4"
     },
     {
       "src": "https://drive.google.com/thumbnail?id=18P-eZFoDwFYpczcppq3lcc-DUiB_1yGx&sz=w2000",
@@ -302,12 +304,12 @@ window.portfolioMedia = {
       "title": "5-8"
     },
     {
-      "src": "assets/drive-videos/camcorder/imgp0099.mp4",
+      "src": "assets/drive-videos/camcorder/5-9.mp4",
       "poster": "https://drive.google.com/thumbnail?id=1I32DcSMbnTpPKpCDEnwL75aP4UeRXzXq&sz=w1200",
       "href": "https://drive.google.com/file/d/1I32DcSMbnTpPKpCDEnwL75aP4UeRXzXq/view?usp=drivesdk",
       "provider": "local",
       "type": "video",
-      "title": "IMGP0099"
+      "title": "5-9"
     },
     {
       "src": "https://drive.google.com/thumbnail?id=1fA2J5cWUSfuyIG4t6wTV5m8eB_b-gOlR&sz=w2000",
@@ -470,14 +472,6 @@ window.portfolioMedia = {
       "href": "https://drive.google.com/file/d/1ureAW8FZOfcnmWGJWGABtQtajCuec9Ao/view?usp=drivesdk",
       "type": "image",
       "title": "8-8"
-    },
-    {
-      "src": "assets/drive-videos/camcorder/imgp0072.mp4",
-      "poster": "https://drive.google.com/thumbnail?id=1khASGwDwwKCxmP1lDKXDrUME-8nKD6ke&sz=w1200",
-      "href": "https://drive.google.com/file/d/1khASGwDwwKCxmP1lDKXDrUME-8nKD6ke/view?usp=drivesdk",
-      "provider": "local",
-      "type": "video",
-      "title": "IMGP0072"
     }
   ]
 };

@@ -149,8 +149,10 @@ video {
   position: absolute;
   inset: -1px;
   z-index: 6;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: var(--pink);
   opacity: 1;
   transition: opacity 0.2s ease;
@@ -165,8 +167,9 @@ video {
   visibility: hidden;
 }
 
-.pane-loading span,
-.pane-menu-option {
+.pane-loading-title,
+.pane-menu-option-title {
+  display: block;
   font-weight: 900;
   font-size: 23cqw;
   line-height: 1;
@@ -185,6 +188,18 @@ video {
   color: transparent;
   -webkit-text-fill-color: transparent;
   transition: --progress 0.25s ease;
+}
+
+.pane-loading-label {
+  display: block;
+  margin-top: -0.15em;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.pane-loading.is-complete .pane-loading-label {
+  display: none;
 }
 
 .pane-scroll {
@@ -652,8 +667,10 @@ video {
 
   .pane-menu-option {
     flex: 1;
-    display: grid;
-    place-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     border: 0;
     background-color: transparent;
     cursor: pointer;
@@ -661,6 +678,18 @@ video {
 
   .pane-menu-option:disabled {
     cursor: default;
+  }
+
+  .pane-menu-option-label {
+    display: block;
+    margin-top: -0.15em;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .pane-menu-option:not(:disabled) .pane-menu-option-label {
+    display: none;
   }
 
   .portfolio-page:has(.content-grid[data-active-pane]) .pane-back {

@@ -135,6 +135,10 @@ function pathSegments(item) {
   return item.path.split("/").map(normalizeText);
 }
 
+function isNumberedPhotoFolder(segment) {
+  return /^[1-8](?:\s|$)/.test(segment);
+}
+
 function mediaGroupFor(item) {
   const segments = pathSegments(item);
 
@@ -143,6 +147,14 @@ function mediaGroupFor(item) {
   }
 
   if (segments[0] === "영상" && segments[1] === "캠코더 영상") {
+    return "camcorder";
+  }
+
+  if (
+    segments[0] === "사진" &&
+    isNumberedPhotoFolder(segments[1] || "") &&
+    segments.length >= 3
+  ) {
     return "camcorder";
   }
 
