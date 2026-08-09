@@ -116,6 +116,7 @@
     }
 
     let frame = 0;
+    let lastActiveIndex = -1;
 
     function closestCardIndex() {
       const cards = getCards();
@@ -140,6 +141,13 @@
       frame = 0;
 
       const activeIndex = closestCardIndex();
+
+      if (activeIndex === lastActiveIndex) {
+        return;
+      }
+
+      lastActiveIndex = activeIndex;
+
       const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
 
       buttons.forEach((button) => {
@@ -774,7 +782,11 @@
     applyColumns(columns);
 
     return {
-      collapseToSingleColumn: () => applyColumns(1)
+      collapseToSingleColumn: () => {
+        if (columns > 1) {
+          applyColumns(1);
+        }
+      }
     };
   }
 
