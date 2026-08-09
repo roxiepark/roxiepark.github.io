@@ -261,6 +261,25 @@
 
     let railFrame = 0;
     let railSettleTimer = 0;
+    let suppressMainTimer = 0;
+
+    function mirrorMainToRailProgress() {
+      const maxRailScroll = Math.max(railEl.scrollWidth - railEl.clientWidth, 0);
+      const maxMainScroll = Math.max(scrollArea.scrollHeight - scrollArea.clientHeight, 0);
+
+      if (!maxRailScroll || !maxMainScroll) {
+        return;
+      }
+
+      suppressMain = true;
+      window.clearTimeout(suppressMainTimer);
+      suppressMainTimer = window.setTimeout(() => {
+        suppressMain = false;
+      }, 250);
+
+      const progress = railEl.scrollLeft / maxRailScroll;
+      scrollArea.scrollTop = progress * maxMainScroll;
+    }
 
     function previewFromRail() {
       railFrame = 0;
@@ -274,6 +293,8 @@
       if (index >= 0) {
         highlight(index);
       }
+
+      mirrorMainToRailProgress();
     }
 
     function commitFromRail() {
