@@ -108,6 +108,68 @@
     });
   }
 
+  function initRailHighlightSync(options) {
+    const { scrollArea, railEl, getCards, indexOf } = options;
+
+    if (!scrollArea || !railEl) {
+      return;
+    }
+
+    let frame = 0;
+
+    function closestCardIndex() {
+      const cards = getCards();
+
+      if (!cards.length) {
+        return -1;
+      }
+
+      const scrollRect = scrollArea.getBoundingClientRect();
+      const closest = cards.reduce(
+        (best, card) => {
+          const distance = Math.abs(card.getBoundingClientRect().top - scrollRect.top);
+          return distance < best.distance ? { card, distance } : best;
+        },
+        { card: cards[0], distance: Infinity }
+      ).card;
+
+      return indexOf(closest);
+    }
+
+    function update() {
+      frame = 0;
+
+      const activeIndex = closestCardIndex();
+      const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
+
+      buttons.forEach((button) => {
+        button.classList.toggle("is-active", Number(button.dataset.index) === activeIndex);
+      });
+
+      const activeButton = buttons[activeIndex];
+
+      if (activeButton) {
+        const railRect = railEl.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        const targetScroll =
+          railEl.scrollLeft +
+          (buttonRect.left + buttonRect.width / 2) -
+          (railRect.left + railRect.width / 2);
+
+        railEl.scrollTo({ left: targetScroll, behavior: "smooth" });
+      }
+    }
+
+    function requestUpdate() {
+      if (!frame) {
+        frame = requestAnimationFrame(update);
+      }
+    }
+
+    scrollArea.addEventListener("scroll", requestUpdate, { passive: true });
+    requestUpdate();
+  }
+
   function markUnavailable(event) {
     const card = event.currentTarget.closest(".reel-card, .photo-card");
     if (card) {
@@ -447,6 +509,20 @@
       getCard: (index) => photoCardElements[index],
       topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0,
       beforeScroll: () => photosZoom?.collapseToSingleColumn()
+    });
+
+    initRailHighlightSync({
+      scrollArea: document.querySelector(".reels-pane .pane-scroll"),
+      railEl: reelsRail,
+      getCards: () => Array.from(reelsList.children),
+      indexOf: (card) => Array.from(reelsList.children).indexOf(card)
+    });
+
+    initRailHighlightSync({
+      scrollArea: document.querySelector(".photos-pane .pane-scroll"),
+      railEl: photosRail,
+      getCards: () => Array.from(photosGrid.querySelector(".photos-column")?.children || []),
+      indexOf: (card) => photoCardElements.indexOf(card)
     });
     setupPaneLoader(
       "reels",
