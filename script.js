@@ -260,10 +260,23 @@
     }
 
     let railFrame = 0;
+    let railSettleTimer = 0;
 
-    function updateFromRail() {
+    function previewFromRail() {
       railFrame = 0;
 
+      if (suppressRail) {
+        return;
+      }
+
+      const index = closestButtonIndexToCenter();
+
+      if (index >= 0) {
+        highlight(index);
+      }
+    }
+
+    function commitFromRail() {
       if (suppressRail) {
         return;
       }
@@ -271,14 +284,17 @@
       setActive(closestButtonIndexToCenter(), { scrollMain: true });
     }
 
-    function requestRailUpdate() {
+    function handleRailScroll() {
       if (!railFrame) {
-        railFrame = requestAnimationFrame(updateFromRail);
+        railFrame = requestAnimationFrame(previewFromRail);
       }
+
+      window.clearTimeout(railSettleTimer);
+      railSettleTimer = window.setTimeout(commitFromRail, 150);
     }
 
     scrollArea.addEventListener("scroll", requestMainUpdate, { passive: true });
-    railEl.addEventListener("scroll", requestRailUpdate, { passive: true });
+    railEl.addEventListener("scroll", handleRailScroll, { passive: true });
 
     railEl.addEventListener("click", (event) => {
       const button = event.target.closest(".thumbnail-rail-item");
@@ -775,9 +791,38 @@
     let columns = maxColumns();
 
     function applyColumns(next) {
+      const prevColumns = columns;
       columns = Math.min(Math.max(next, minColumns), maxColumns());
+
+      const columnsChanged =
+        photosGrid.dataset.columns !== undefined && columns !== prevColumns;
+      const topOffset = parseFloat(getComputedStyle(photosGrid).paddingTop) || 0;
+      let anchorCard = null;
+
+      if (columnsChanged && scrollArea && photoCardElements.length) {
+        const scrollRect = scrollArea.getBoundingClientRect();
+        anchorCard = photoCardElements.reduce(
+          (best, card) => {
+            const distance = Math.abs(card.getBoundingClientRect().top - scrollRect.top);
+            return distance < best.distance ? { card, distance } : best;
+          },
+          { card: photoCardElements[0], distance: Infinity }
+        ).card;
+      }
+
       photosGrid.dataset.columns = String(columns);
       layoutPhotosColumns(columns);
+
+      if (anchorCard) {
+        const scrollRect = scrollArea.getBoundingClientRect();
+        const cardRect = anchorCard.getBoundingClientRect();
+        const targetTop = Math.max(
+          scrollArea.scrollTop + cardRect.top - scrollRect.top - topOffset,
+          0
+        );
+
+        scrollArea.scrollTo({ top: targetTop, behavior: "auto" });
+      }
     }
 
     let wheelCooldown = false;
