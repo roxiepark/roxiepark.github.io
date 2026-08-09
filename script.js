@@ -796,7 +796,6 @@
 
       const columnsChanged =
         photosGrid.dataset.columns !== undefined && columns !== prevColumns;
-      const topOffset = parseFloat(getComputedStyle(photosGrid).paddingTop) || 0;
       let anchorCard = null;
 
       if (columnsChanged && scrollArea && photoCardElements.length) {
@@ -814,6 +813,7 @@
       layoutPhotosColumns(columns);
 
       if (anchorCard) {
+        const topOffset = parseFloat(getComputedStyle(photosGrid).paddingTop) || 0;
         const scrollRect = scrollArea.getBoundingClientRect();
         const cardRect = anchorCard.getBoundingClientRect();
         const targetTop = Math.max(
