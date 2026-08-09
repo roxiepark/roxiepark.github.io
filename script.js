@@ -31,6 +31,45 @@
     return fallback;
   }
 
+  function createRailThumbButton(index, src, label) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "thumbnail-rail-item";
+    button.dataset.index = String(index);
+    button.setAttribute("aria-label", `${label} ${index + 1}`);
+
+    if (src) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.loading = "lazy";
+      button.append(img);
+    } else {
+      const placeholder = document.createElement("span");
+      placeholder.className = "thumbnail-rail-item-placeholder";
+      placeholder.textContent = String(index + 1);
+      button.append(placeholder);
+    }
+
+    return button;
+  }
+
+  function buildThumbnailRail(railEl, dataItems, placeholderTotal, getThumbSrc, label) {
+    if (!railEl) {
+      return;
+    }
+
+    const total = dataItems.length || placeholderTotal;
+    const buttons = Array.from({ length: total }, (_, index) => {
+      const item = dataItems[index];
+      const src = item ? getThumbSrc(item) : "";
+      return createRailThumbButton(index, src, label);
+    });
+
+    railEl.replaceChildren(...buttons);
+  }
+
   function markUnavailable(event) {
     const card = event.currentTarget.closest(".reel-card, .photo-card");
     if (card) {
@@ -321,6 +360,9 @@
   }
 
   function mount() {
+    const reelsRail = document.querySelector('[data-rail="reels"]');
+    const photosRail = document.querySelector('[data-rail="photos"]');
+
     const reelItems = reels.length
       ? reels.map(renderReel)
       : Array.from({ length: placeholderCount.reels }, (_, index) =>
@@ -335,6 +377,16 @@
 
     reelsList.replaceChildren(...reelItems);
     layoutPhotosColumns(1);
+
+    buildThumbnailRail(reelsRail, reels, placeholderCount.reels, (item) => item.poster, "Reel");
+    buildThumbnailRail(
+      photosRail,
+      photos,
+      placeholderCount.photos,
+      (item) => (isVideoItem(item) ? item.poster : item.src),
+      "Photo"
+    );
+
     const refreshAutoplay = observeAutoplayVideos();
     snapPaneOnScrollEnd(".reels-pane .pane-scroll", reelsList, ".reel-card");
     snapPaneOnScrollEnd(".photos-pane .pane-scroll", photosGrid, ".photo-card", {
