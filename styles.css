@@ -533,7 +533,9 @@ video {
   position: relative;
   display: block;
   width: 100%;
+  min-height: 80px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }

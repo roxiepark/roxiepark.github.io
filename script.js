@@ -246,7 +246,47 @@
     image.src = item.src;
     image.alt = item.title || `PHOTO ${index + 1}`;
     image.decoding = "async";
-    image.addEventListener("error", markUnavailable);
+    image.dataset.ready = "false";
+
+    let retries = 0;
+    const maxRetries = 3;
+
+    function settle() {
+      image.dataset.ready = "true";
+      image.dispatchEvent(new Event("mediaready"));
+    }
+
+    function retryLoad() {
+      if (retries >= maxRetries) {
+        markUnavailable({ currentTarget: image });
+        settle();
+        return;
+      }
+
+      retries += 1;
+      const delay = retries * 500;
+      window.setTimeout(() => {
+        const separator = item.src.includes("?") ? "&" : "?";
+        image.src = `${item.src}${separator}retry=${retries}-${Date.now()}`;
+      }, delay);
+    }
+
+    image.addEventListener("load", () => {
+      if (image.naturalWidth > 40 && image.naturalHeight > 40) {
+        if (image.decode) {
+          image
+            .decode()
+            .then(settle)
+            .catch(settle);
+        } else {
+          settle();
+        }
+        return;
+      }
+
+      retryLoad();
+    });
+    image.addEventListener("error", retryLoad);
 
     card.append(image, createFallback(item, "PHOTO UNAVAILABLE"));
     return card;
@@ -318,7 +358,7 @@
     );
   }
 
-  const MAX_LOADING_MS = 15000;
+  const MAX_LOADING_MS = 45000;
 
   function setupPaneLoader(paneName, paneSelector, mediaElements, refreshAutoplay) {
     const paneEl = document.querySelector(paneSelector);
@@ -381,11 +421,10 @@
 
     mediaElements.forEach((el) => {
       if (el.tagName === "IMG") {
-        if (el.complete) {
+        if (el.dataset.ready === "true") {
           registerLoaded();
         } else {
-          el.addEventListener("load", registerLoaded, { once: true });
-          el.addEventListener("error", registerLoaded, { once: true });
+          el.addEventListener("mediaready", registerLoaded, { once: true });
         }
       } else if (el.tagName === "VIDEO") {
         const readyEvent = el.preload === "auto" ? "canplay" : "loadedmetadata";
