@@ -14,6 +14,14 @@
   --header-height: clamp(92px, 13dvh, 138px);
   --footer-height: clamp(112px, 15dvh, 150px);
   --content-height: min(72dvh, calc(100dvh - var(--header-height) - var(--footer-height)));
+  --footer-logo-width: clamp(172px, 18vw, 312px);
+  --footer-visual-height: calc(var(--footer-logo-width) * 441 / 2000);
+  --footer-top: calc(100dvh - 16px - var(--footer-visual-height));
+  --content-top: calc(51dvh - (var(--content-height) / 2));
+  --content-gap-top: calc(var(--content-top) - var(--header-height));
+  --content-height-expanded: calc(
+    var(--footer-top) - var(--content-gap-top) - var(--content-top)
+  );
   --scrollbar-width: clamp(5px, 0.5vw, 8px);
   --scrollbar-gap: clamp(8px, 0.9vw, 14px);
   --scrollbar-space: calc(var(--scrollbar-width) + var(--scrollbar-gap));
@@ -81,11 +89,10 @@ video {
 
 .content-grid {
   position: absolute;
-  top: 51%;
+  top: var(--content-top);
   left: clamp(14px, 2.2vw, 40px);
   right: clamp(14px, 2.2vw, 40px);
-  height: var(--content-height);
-  transform: translateY(-50%);
+  height: var(--content-height-expanded);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(12px, 2vw, 28px);
@@ -617,8 +624,7 @@ video {
   left: 50%;
   bottom: 16px;
   z-index: 10;
-  width: min(18vw, 312px);
-  min-width: 172px;
+  width: var(--footer-logo-width);
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -770,7 +776,7 @@ video {
     right: 12px;
     width: auto;
     min-width: 0;
-    height: calc(172px * 441 / 2000);
+    height: var(--footer-visual-height);
     transform: none;
     display: flex;
     align-items: center;
