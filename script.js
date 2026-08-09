@@ -70,6 +70,42 @@
     railEl.replaceChildren(...buttons);
   }
 
+  function syncRailEdgePadding(railEl) {
+    if (!railEl) {
+      return;
+    }
+
+    function update() {
+      const buttons = Array.from(railEl.querySelectorAll(".thumbnail-rail-item"));
+
+      if (!buttons.length) {
+        return;
+      }
+
+      const railWidth = railEl.clientWidth;
+      const firstWidth = buttons[0].getBoundingClientRect().width;
+      const lastWidth = buttons[buttons.length - 1].getBoundingClientRect().width;
+
+      railEl.style.paddingInlineStart = `${Math.max(railWidth / 2 - firstWidth / 2, 0)}px`;
+      railEl.style.paddingInlineEnd = `${Math.max(railWidth / 2 - lastWidth / 2, 0)}px`;
+    }
+
+    update();
+
+    Array.from(railEl.querySelectorAll("img")).forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", update, { once: true });
+      }
+    });
+
+    if ("ResizeObserver" in window) {
+      const observer = new ResizeObserver(update);
+      observer.observe(railEl);
+    } else {
+      window.addEventListener("resize", update);
+    }
+  }
+
   function scrollCardIntoView(scrollArea, card, topOffset = 0) {
     if (!scrollArea || !card) {
       return;
@@ -494,6 +530,8 @@
       (item) => (isVideoItem(item) ? item.poster : item.src),
       "Photo"
     );
+    syncRailEdgePadding(reelsRail);
+    syncRailEdgePadding(photosRail);
 
     const refreshAutoplay = observeAutoplayVideos();
     snapPaneOnScrollEnd(".reels-pane .pane-scroll", reelsList, ".reel-card");

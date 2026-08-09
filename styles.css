@@ -754,23 +754,28 @@ video {
     display: none;
   }
 
-  .site-footer {
-    top: auto;
-    bottom: 12px;
+  .reels-pane .pane-scroll {
+    padding-right: 0;
+  }
+
+  .photos-surface {
+    width: 100%;
+  }
+
+  .content-grid[data-active-pane="reels"]:has(.reels-pane:not(.is-loading))
+    ~ .site-footer,
+  .content-grid[data-active-pane="photos"]:has(.photos-pane:not(.is-loading))
+    ~ .site-footer {
     left: 12px;
     right: 12px;
     width: auto;
     min-width: 0;
-    height: calc(var(--footer-height) - 24px);
+    height: calc(172px * 441 / 2000);
     transform: none;
     display: flex;
     align-items: center;
     justify-content: center;
     pointer-events: auto;
-  }
-
-  .site-footer-logo {
-    width: min(46vw, 220px);
   }
 
   .content-grid[data-active-pane="reels"]:has(.reels-pane:not(.is-loading))
