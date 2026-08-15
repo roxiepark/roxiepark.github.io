@@ -1494,6 +1494,10 @@
     function pauseOtherVideosInGroup(video) {
       const group = video.dataset.mediaGroup;
 
+      if (group === "photos") {
+        return;
+      }
+
       videos.forEach((other) => {
         if (other === video || other.dataset.mediaGroup !== group || other.paused) {
           return;

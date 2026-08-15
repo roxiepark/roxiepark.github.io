@@ -917,6 +917,43 @@ video {
   display: none;
 }
 
+@media (min-width: 761px) {
+  .careers-section:not(.careers-info) .careers-area {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .careers-section:not(.careers-info) .careers-copy-block {
+    padding-top: 12px;
+    border-top: 2px solid var(--white);
+  }
+
+  .careers-copy-block h2.careers-title {
+    font-size: 2.08rem;
+  }
+
+  .careers-copy-block h3 {
+    font-size: 1.24rem;
+  }
+
+  .careers-copy-block p {
+    font-size: 1.08rem;
+  }
+
+  .careers-meta,
+  .careers-role,
+  .careers-subtitle {
+    font-size: 1.02rem;
+  }
+
+  .careers-index a > strong,
+  .careers-index a > span,
+  .careers-index-item > strong,
+  .careers-index-item > span {
+    font-size: 1.08rem;
+  }
+}
+
 @media (max-width: 760px) {
   :root {
     --header-copy-size: 1.05rem;
@@ -977,6 +1014,11 @@ video {
   .careers-section:not(.careers-info) .careers-area {
     padding-top: 0;
     border-top: 0;
+  }
+
+  .careers-section:not(.careers-info) + .careers-section:not(.careers-info) {
+    padding-top: 12px;
+    border-top: 2px solid var(--white);
   }
 
   .careers-area.has-no-photo .careers-copy-block {
