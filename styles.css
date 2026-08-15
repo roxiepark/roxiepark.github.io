@@ -951,10 +951,23 @@ a[x-apple-data-detectors]:visited {
     border-top: 2px solid var(--white);
   }
 
+  .careers-section:not(.careers-info) .careers-area:first-child {
+    position: relative;
+  }
+
+  .careers-section:not(.careers-info) .careers-area:first-child::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(0px - var(--careers-section-half-gap));
+    border-top: 2px solid var(--white);
+  }
+
   .careers-section:not(.careers-info)
     .careers-area:first-child
     .careers-copy-block::before {
-    top: calc(0px - var(--careers-section-half-gap));
+    display: none;
   }
 
   .careers-copy-block h2.careers-title {
