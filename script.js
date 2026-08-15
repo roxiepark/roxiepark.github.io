@@ -63,8 +63,10 @@
   };
   const videoExtensions = new Set(["mp4", "mov", "m4v", "webm", "ogv"]);
   const programmaticPauses = new WeakSet();
+  const mobileViewportQuery = window.matchMedia("(max-width: 760px)");
   let reelsMuted = true;
   const reelMuteControls = [];
+  let refreshAutoplayVideos = null;
 
   function getExtension(src = "") {
     const cleanSrc = src.split("?")[0].split("#")[0];
@@ -584,15 +586,29 @@
   }
 
   function markUnavailable(event) {
+    if (event.currentTarget.error?.code === 1) {
+      return;
+    }
+
     const card = event.currentTarget.closest(".reel-card, .photo-card");
     if (card) {
       card.classList.add("is-unavailable");
     }
   }
 
+  function clearUnavailable(event) {
+    const card = event.currentTarget.closest(".reel-card, .photo-card");
+    if (card) {
+      card.classList.remove("is-unavailable");
+    }
+  }
+
   function createVideo(item, label, options = {}) {
     const video = document.createElement("video");
     const muted = options.muted === true;
+    const deferLoad = mobileViewportQuery.matches && options.deferOnMobile !== false;
+    const preload = deferLoad ? "none" : options.preload || "metadata";
+    const useNativeAutoplay = options.autoplay !== false && !deferLoad;
 
     video.src = item.src;
     video.defaultMuted = muted;
@@ -600,19 +616,33 @@
     video.volume = muted ? 0 : 1;
     video.loop = true;
     video.playsInline = true;
-    video.autoplay = true;
-    video.preload = options.preload || "metadata";
+    video.autoplay = useNativeAutoplay;
+    video.preload = preload;
     video.controls = options.controls !== false;
     video.setAttribute("aria-label", label);
     video.setAttribute("controlsList", "nodownload");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("preload", preload);
     video.dataset.autoplayWhenVisible = "true";
     video.dataset.mediaGroup = options.group || "media";
+
+    if (muted) {
+      video.setAttribute("muted", "");
+    }
+
+    if (useNativeAutoplay) {
+      video.setAttribute("autoplay", "");
+    }
 
     if (item.poster) {
       video.poster = item.poster;
     }
 
     video.addEventListener("error", markUnavailable);
+    video.addEventListener("loadedmetadata", clearUnavailable);
+    video.addEventListener("canplay", clearUnavailable);
+    video.addEventListener("playing", clearUnavailable);
     video.addEventListener("play", () => {
       video.dataset.userPaused = "false";
     });
@@ -906,6 +936,7 @@
     syncRailEdgePadding(photosRail);
 
     const refreshAutoplay = observeAutoplayVideos();
+    refreshAutoplayVideos = refreshAutoplay;
     snapPaneOnScrollEnd(".reels-pane .pane-scroll", reelsList, ".reel-card");
     snapPaneOnScrollEnd(".photos-pane .pane-scroll", photosGrid, ".photo-card", {
       topOffset: () => parseFloat(getComputedStyle(photosGrid).paddingTop) || 0,
@@ -1018,6 +1049,11 @@
           el.addEventListener("mediaready", registerLoaded, { once: true });
         }
       } else if (el.tagName === "VIDEO") {
+        if (el.preload === "none") {
+          registerLoaded();
+          return;
+        }
+
         const readyEvent = el.preload === "auto" ? "canplay" : "loadedmetadata";
         const readyState = el.preload === "auto" ? 3 : 1;
 
@@ -1049,6 +1085,11 @@
         "aria-expanded",
         paneName === "careers" ? "true" : "false"
       );
+
+      if (paneName === "reels" || paneName === "photos") {
+        const pane = document.querySelector(`.${paneName}-pane`);
+        requestAnimationFrame(() => refreshAutoplayVideos?.(pane));
+      }
     }
 
     function clearActivePane() {
