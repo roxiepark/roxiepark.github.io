@@ -31,19 +31,19 @@
   <body>
     <main class="portfolio-page" aria-label="Hyeyoung Park">
       <header class="site-header" aria-label="Portfolio contact">
-        <button type="button" class="pane-back" aria-label="Back to menu">
+        <button type="button" class="pane-back" data-pane-back aria-label="Back to menu">
           <img src="assets/icons/back.png" alt="" aria-hidden="true">
         </button>
         <p>SM ENTERTAINMENT</p>
         <p class="contact-line">
           <span>HYEYOUNG PARK 1999.09.08</span>
-          <a href="mailto:roxie2339@gmail.com">ROXIE2339@GMAIL.COM</a>
+          <span>ROXIE2339@GMAIL.COM</span>
         </p>
-        <p><a href="tel:+821039941384">+82 010-3994-1384</a></p>
+        <p>+82 010-3994-1384</p>
       </header>
 
-      <section class="content-grid" aria-label="Reels and photos">
-        <div class="pane-menu" aria-label="Choose reels or photos">
+      <section class="content-grid" aria-label="Reels, photos, and careers">
+        <div class="pane-menu" aria-label="Choose reels, photos, or careers">
           <button type="button" class="pane-menu-option" data-pane="reels">
             <span class="pane-menu-option-title">REELS</span>
             <span class="pane-menu-option-label">Loading</span>
@@ -51,6 +51,9 @@
           <button type="button" class="pane-menu-option" data-pane="photos">
             <span class="pane-menu-option-title">PHOTOS</span>
             <span class="pane-menu-option-label">Loading</span>
+          </button>
+          <button type="button" class="pane-menu-option" data-pane="careers">
+            <span class="pane-menu-option-title">CAREERS</span>
           </button>
         </div>
 
@@ -81,10 +84,255 @@
             <span class="custom-scrollbar-thumb"></span>
           </div>
         </section>
+
+        <section id="careersPane" class="careers-pane" aria-label="Careers">
+          <div class="careers-scroll">
+            <div class="careers-flow">
+              <section class="careers-section careers-info" data-careers-section="info" data-areas="1">
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">PARK HYEYOUNG<br>박혜영</h2>
+                    <p><strong>CONTACT</strong><br><a href="mailto:roxie2339@gmail.com">roxie2339@gmail.com</a><br><a href="tel:+821039941384">010.3994.1384</a></p>
+                    <p><strong>TOOLS</strong><br>Photoshop · Illustrator · Figma · Premiere Pro · CapCut</p>
+                    <nav class="careers-index" aria-label="Selected works">
+                      <h2 class="careers-title">SELECTED WORKS</h2>
+                      <a href="#project1" data-careers-target="project1">
+                        <strong>01　박진영 JINYOUNG — Christmas Fever</strong>
+                        <p>SONG CLIP · ART TEAM</p>
+                      </a>
+                      <a href="#project2" data-careers-target="project2">
+                        <strong>02　정우 JUNGWOO — SUGAR</strong>
+                        <p>SINGLE PROMOTION · ART TEAM</p>
+                      </a>
+                      <a href="#project3" data-careers-target="project3">
+                        <strong>03　NCT WISH — MERRY WISHMAS!</strong>
+                        <p>YOUTUBE CONTENT · ART TEAM</p>
+                      </a>
+                      <a href="#project4" data-careers-target="project4">
+                        <strong>04　NCTzen WISH — JAPAN SPECIAL KIT 2026</strong>
+                        <p>SPECIAL BOOK · ART TEAM</p>
+                      </a>
+                      <span class="careers-index-item">
+                        <strong>05　RIIZE — 2025 RIIZING Awards Night</strong>
+                        <p>YOUTUBE CONTENT · ART TEAM</p>
+                      </span>
+                      <span class="careers-index-item">
+                        <strong>06　NCT WISH — TONIGHT with WISH</strong>
+                        <p>YOUTUBE CONTENT · ART TEAM</p>
+                      </span>
+                      <a href="#project7" data-careers-target="project7">
+                        <strong>07　SBS — 멋진 신세계</strong>
+                        <p>DRAMA · ART TEAM</p>
+                      </a>
+                      <a href="#project8" data-careers-target="project8">
+                        <strong>08　SPONGE PROJECT</strong>
+                        <p>SOCIAL CONTENT · CONTENT OPERATION</p>
+                      </a>
+                    </nav>
+                  </article>
+                </div>
+              </section>
+
+              <section id="project1" class="careers-section" data-careers-section="project1" data-areas="3">
+                <div class="careers-photo-stack" aria-hidden="true">
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                </div>
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">JINYOUNG<br>Christmas Fever</h2>
+                    <p class="careers-meta">2025 · SONG CLIP · ART TEAM</p>
+                    <p>〈Christmas Fever〉 SONG CLIP 아트팀으로 참여해 세트 및 소품 세팅과 촬영 현장 연출을 진행했습니다.</p>
+                    <p>정해진 콘셉트를 구현하는 것뿐 아니라, 현장에서 필요한 아이디어를 제안하고 직접 적용했습니다.</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>WINDOW EFFECT</h3>
+                    <p>창문에 김을 서리게 한 뒤 손가락으로 그림을 그리는 장면이 예정되어 있었지만, 촬영 당시 실내 온도가 낮아 원하는 만큼 결로가 생기지 않았습니다.</p>
+                    <p>이를 해결하기 위해 스팀 다리미를 활용해 직접 수증기를 입히는 방법을 제안했습니다. 촬영 직전 스팀의 양과 범위를 조절해 자연스럽게 김이 서린 듯한 질감을 만들었고, 예정되어 있던 창문 연출을 그대로 촬영할 수 있었습니다.</p>
+                    <p class="careers-role">창문 연출 아이디어 제안 및 현장 구현</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>TABLE STYLING</h3>
+                    <p>크리스마스 디너 장면의 테이블과 소품 세팅을 진행했습니다.</p>
+                    <p>기존에는 빵 사이사이에 초를 세우는 방향으로 준비하고 있었지만, 세팅 과정에서 빵 위에 직접 초를 꽂아 케이크처럼 연출하는 아이디어를 제안했습니다.</p>
+                    <p>제안이 현장에서 반영되었고, 여러 개의 빵과 촛불이 하나의 오브제처럼 연결되면서 테이블 전체에 더욱 강한 시각적 포인트가 만들어졌습니다. 해당 세팅은 최종 촬영에도 그대로 사용되었습니다.</p>
+                    <p class="careers-role">테이블 세팅 및 촛불 연출 아이디어 제안</p>
+                  </article>
+                </div>
+              </section>
+
+              <section id="project2" class="careers-section" data-careers-section="project2" data-areas="3">
+                <div class="careers-photo-stack" aria-hidden="true">
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                </div>
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">JUNGWOO<br>SUGAR</h2>
+                    <p class="careers-meta">2025 · PROMOTION · ART TEAM</p>
+                    <p>정우의 솔로 싱글 〈SUGAR〉 프로모션 아트팀으로 참여해 콘셉트 소품 제작과 현장 세팅을 진행했습니다.</p>
+                    <p>‘SUGARING PHARMACY’라는 메디컬 콘셉트에 SUGAR의 달콤한 이미지를 결합해, 캔디를 알약처럼 활용한 처방 소품과 오브제를 제작했습니다.</p>
+                    <p class="careers-role">Prop Making · Prop Styling · On-set Support</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>PROP MAKING</h3>
+                    <p class="careers-subtitle">SUGARING PHARMACY</p>
+                    <p>실제 병원이나 약국에서 볼 법한 소품에 캔디를 결합해 〈SUGAR〉만의 ‘달콤한 약국’을 표현했습니다.</p>
+                    <p>캔디를 알약처럼 활용한 약병과 칫솔·치실 등의 소품을 제작하고, 공간 곳곳에도 캔디를 이용해 SUGAR의 글자와 흔적을 남기는 디테일을 더했습니다.</p>
+                    <p>투명 약봉투는 여러 개를 안쪽에서 연결해 목에 걸 수 있는 착용형 오브제로 확장했으며, 최종 콘텐츠에서 실제 착용 소품으로 활용되었습니다.</p>
+                    <p class="careers-role">콘셉트 소품 제작 · 캔디 디테일 세팅 · 착용형 소품 제작</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>ON-SET ADJUSTMENT</h3>
+                    <p class="careers-subtitle">촬영 현장에서 필요한 형태로 조정</p>
+                    <p>촬영용 대형 처방 봉투는 캔디를 넣을수록 옆면이 벌어져 찢어질 위험이 있었습니다.</p>
+                    <p>화면에서 보이는 형태를 해치지 않도록 테이프와 풀을 봉투 안쪽에 사용해 접합 부분을 보강했습니다.</p>
+                    <p>이후 캔디를 더 풍성하게 보여달라는 요청에는 봉투 바닥에 구긴 종이를 채워 높이를 만든 뒤, 남은 캔디를 상단에 집중적으로 배치해 볼륨을 살렸습니다.</p>
+                    <p>한정된 재료 안에서 촬영에 필요한 형태를 빠르게 완성했습니다.</p>
+                    <p class="careers-role">처방 봉투 제작 및 보강 · 현장 세팅 조정</p>
+                  </article>
+                </div>
+              </section>
+
+              <section id="project3" class="careers-section" data-careers-section="project3" data-areas="4">
+                <div class="careers-photo-stack" aria-hidden="true">
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                </div>
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">NCT WISH<br>MERRY WISHMAS!</h2>
+                    <p class="careers-meta">2025 · YOUTUBE CONTENT · ART TEAM</p>
+                    <p>NCT WISH의 크리스마스 유튜브 콘텐츠 〈MERRY WISHMAS!〉 아트팀으로 참여해 세트 및 소품 세팅을 진행했습니다.</p>
+                    <p>멤버들이 함께 음식을 만들고 크리스마스 파티를 즐기는 콘텐츠인 만큼, 공간 전체가 실제 크리스마스 파티처럼 풍성하고 따뜻하게 보일 수 있도록 세트의 디테일을 구성했습니다.</p>
+                    <p class="careers-role">Set Styling · Prop Styling · On-set Support</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>SET &amp; PROP STYLING</h3>
+                    <p class="careers-subtitle">크리스마스 무드를 만드는 작은 디테일</p>
+                    <p>크리스마스 콘셉트에 맞춰 선물 상자, 오너먼트, 리본, 패브릭 등 다양한 소품으로 공간 곳곳을 채웠습니다.</p>
+                    <p>책을 여러 권 쌓은 뒤 표정과 모자, 리본을 더해 책 자체가 하나의 눈사람처럼 보이는 오브제를 만들고, 기존 가구와 소품 사이에도 작은 크리스마스 요소를 배치했습니다.</p>
+                    <p>큰 장식뿐 아니라 화면 곳곳에서 발견되는 작은 디테일까지 크리스마스 무드가 이어지도록 세팅했습니다.</p>
+                    <p class="careers-role">크리스마스 소품 제작 및 세트 디테일링</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>TABLE STYLING</h3>
+                    <p class="careers-subtitle">멤버들이 만든 음식이 가장 풍성하게 보이도록</p>
+                    <p>멤버들이 직접 만든 요리와 준비된 음식이 한 테이블에 모이는 장면의 전체 테이블 세팅을 담당했습니다.</p>
+                    <p>메인 요리와 디저트가 서로 가리지 않도록 높이와 위치를 조절하고, 접시·잔·캔들 등의 기물을 배치해 음식이 화면에서 풍성하게 보이도록 구성했습니다.</p>
+                    <p>카메라 방향과 멤버들의 식사 동선을 함께 고려해, 크리스마스 무드를 유지하면서도 실제 촬영에 불편이 없도록 세팅했습니다.</p>
+                    <p class="careers-role">Table Styling · Food &amp; Prop Arrangement</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>ON-SET ADJUSTMENT</h3>
+                    <p class="careers-subtitle">현장에서 보이는 문제를 세트의 일부로 해결</p>
+                    <p>촬영 현장에서 한쪽 벽의 스튜디오 싱크대가 화면에 그대로 노출되어, 해당 공간을 자연스럽게 가려달라는 요청을 받았습니다.</p>
+                    <p>별도의 구조물을 새로 제작하기 어려운 상황이라 현장에 남아 있던 패브릭을 활용해 배경을 가리고, 그 앞에 선물 상자와 크리스마스 소품을 층층이 배치해 기존 세트의 일부처럼 보이도록 연출했습니다.</p>
+                    <p>단순히 싱크대를 가리는 데 그치지 않고 주변의 핑크·레드 컬러와 장식 밀도를 맞춰, 처음부터 크리스마스 세트로 계획된 공간처럼 연결했습니다.</p>
+                    <p class="careers-role">현장 세트 수정 · 소품 재배치 및 공간 연출</p>
+                  </article>
+                </div>
+              </section>
+
+              <section id="project4" class="careers-section" data-careers-section="project4" data-areas="2">
+                <div class="careers-photo-stack" aria-hidden="true">
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                </div>
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">NCTzen WISH-JAPAN<br>SPECIAL KIT 2026</h2>
+                    <p class="careers-meta">2026 · FANCLUB CONTENT · ART TEAM</p>
+                    <p>NCT WISH 일본 공식 팬클럽의 〈NCTzen WISH-JAPAN SPECIAL KIT 2026〉 Special Book 촬영 아트팀으로 참여했습니다.</p>
+                    <p>‘NEON’을 테마로 한 촬영에서 메인 세트 설치와 멤버별 소품 세팅을 진행하며, 촬영 배경부터 실제 촬영에 사용되는 오브제까지 현장 구성을 함께 담당했습니다.</p>
+                    <p class="careers-role">Set Installation · Prop Setting · On-set Support</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>SET INSTALLATION &amp; SHOOTING SUPPORT</h3>
+                    <p class="careers-subtitle">세트 설치부터 멤버별 촬영 준비까지</p>
+                    <p>메인 배경인 철제 펜스에 네온사인 형태의 와이어 장식을 설치하고, 사다리를 이용해 각 와이어의 위치와 간격을 직접 조정했습니다.</p>
+                    <p>촬영 중에는 멤버별 소품을 촬영 순서에 맞춰 미리 분류·세팅해, 멤버 교체 시 준비 시간을 줄이고 촬영이 원활하게 이어질 수 있도록 지원했습니다.</p>
+                    <p class="careers-role">네온 와이어 설치 · 멤버별 소품 세팅 · 촬영 진행 지원</p>
+                  </article>
+                </div>
+              </section>
+
+              <section id="project7" class="careers-section" data-careers-section="project7" data-areas="4">
+                <div class="careers-photo-stack" aria-hidden="true">
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                  <div class="careers-photo-slot"></div>
+                </div>
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">SBS 금토드라마<br>〈멋진 신세계〉</h2>
+                    <p class="careers-meta">2026 · DRAMA · ART TEAM</p>
+                    <p>드라마 〈멋진 신세계〉 소품팀으로 참여해 주요 인물의 주거 공간과 극 중 회사 공간을 연출했습니다.</p>
+                    <p>대본을 바탕으로 인물의 직업, 경제적 환경, 성격과 생활 방식을 분석하고 실제 그 인물이 살아가는 공간처럼 보이도록 소품을 구성했습니다.</p>
+                    <p class="careers-role">Prop Styling · Set Dressing · Character-based Styling</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>신서리의 집</h3>
+                    <p class="careers-subtitle">캐릭터의 생활이 보이는 공간</p>
+                    <p>신서리는 고시원에서 생활하며 보조출연 아르바이트를 병행하는 무명배우입니다.</p>
+                    <p>대본을 읽고 ‘신서리가 실제로 이 방에서 산다면 무엇을 가지고 있을까’를 기준으로 공간 전체를 구성했습니다.</p>
+                    <p>대본과 책, 의상, 생활용품 등을 자연스럽게 배치해 지나치게 꾸며진 세트보다 빠듯한 현실 속에서 배우를 준비하며 살아가는 20대의 생활감이 드러나도록 연출했습니다.</p>
+                    <p class="careers-role">신서리 주거 공간 소품 구성 및 세팅</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>차세계의 집</h3>
+                    <p class="careers-subtitle">인물의 성격을 공간으로 보여주기</p>
+                    <p>차세계는 화장품 회사 BIOJEI를 운영하는 재벌가 출신의 경영자로, 신서리와는 전혀 다른 환경에서 살아온 인물입니다.</p>
+                    <p>넓고 정제된 공간에 맞춰 소품을 과하게 채우기보다 절제해 배치하고, 경영·경제 관련 서적과 영문 서적을 중심으로 책장을 구성했습니다.</p>
+                    <p>화면에 짧게 보이는 소품까지도 차세계의 직업과 배경에 어울리도록 선택해 예민하고 정돈된 인물의 성격이 공간에서도 자연스럽게 이어지도록 연출했습니다.</p>
+                    <p class="careers-role">차세계 주거 공간 소품 구성 및 세팅</p>
+                  </article>
+                  <article class="careers-copy-block">
+                    <h3>BIOJEI OFFICE</h3>
+                    <p class="careers-subtitle">실제 회사처럼 보이는 공간 만들기</p>
+                    <p>극 중 차세계가 운영하는 화장품 회사 BIOJEI의 대표실과 비서실 소품 연출을 진행했습니다.</p>
+                    <p>실제 기업의 대표실과 비서실, 타 드라마의 오피스 공간을 레퍼런스로 조사하며 공간별로 어떤 소품이 필요한지 정리했습니다.</p>
+                    <p>책과 서류, 파일, 사무기기 등의 종류와 위치를 조정해 대표실은 차세계의 지위와 성격이 드러나는 절제된 공간으로, 비서실은 실제 업무가 이루어지는 공간처럼 보이도록 구성했습니다.</p>
+                    <p class="careers-role">BIOJEI 대표실 및 비서실 소품 구성 · 레퍼런스 리서치 · 현장 세팅</p>
+                  </article>
+                </div>
+              </section>
+
+              <section id="project8" class="careers-section" data-careers-section="project8" data-areas="1">
+                <div class="careers-photo-stack" aria-hidden="true">
+                  <div class="careers-photo-slot"></div>
+                </div>
+                <div class="careers-copy-stack">
+                  <article class="careers-copy-block">
+                    <h2 class="careers-title">SPONGE PROJECT</h2>
+                    <p><a href="https://www.instagram.com/sponge.project/" target="_blank" rel="noopener">instagram.com/sponge.project</a></p>
+                    <p class="careers-meta">SOCIAL CONTENT · CONTENT OPERATION</p>
+                    <p>아티스트와 디자이너가 함께하는 시즌형 소셜 프로젝트입니다. 시즌마다 하나의 주제를 선정하고, 이를 제품과 다양한 비주얼 콘텐츠로 확장해 선보이고 있습니다.</p>
+                    <p>하나의 주제를 인물, 패션, 오브제, 공간 등 다양한 장면으로 풀어내며 콘텐츠 촬영부터 카피라이팅, 게시물 업로드까지 소셜 채널 운영 전반을 담당하고 있습니다.</p>
+                    <p class="careers-role">Content Planning · Photography · Copywriting · Social Media</p>
+                  </article>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
       </section>
 
       <footer class="site-footer" aria-label="Site footer">
         <img src="assets/logo.png" alt="SM Entertainment" class="site-footer-logo">
+        <button type="button" class="footer-careers-control footer-careers-open" data-careers-toggle aria-controls="careersPane" aria-expanded="false">
+          <span>CAREERS</span>
+          <img class="footer-careers-icon" src="assets/icons/back.png" alt="" aria-hidden="true">
+        </button>
+        <button type="button" class="footer-careers-control footer-careers-back" data-pane-back aria-label="Back to menu">
+          <img class="footer-careers-icon" src="assets/icons/back.png" alt="" aria-hidden="true">
+          <span>BACK</span>
+        </button>
         <div class="thumbnail-rail" data-rail="reels" aria-label="Reels thumbnails"></div>
         <div class="thumbnail-rail" data-rail="photos" aria-label="Photos thumbnails"></div>
       </footer>

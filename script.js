@@ -21,6 +21,46 @@
     reels: 3,
     photos: 9
   };
+  const careersMedia = {
+    project1: [
+      ["14apfaz1DKARoD6i1EZM5C0fFnQ9Qs5ZR"],
+      ["1SI9eeXca1wU37FipyrN25qMOoxqhuZRS", "1v-PlWYF9OxQA16mCPZyT6taqduRM1l4s"],
+      [
+        "1vMcKW6jMSTycpTr0R5_Nf8hoUbqFn2vL",
+        "1yUxTga6zi_xYgU-Kse3OEJXYnP9gTIcv",
+        "1_lmG0Lq2_b7ucAP3K4ufBhhAXjJkWuNy"
+      ]
+    ],
+    project2: [
+      ["1zPmFImxZHIuoVdJYk-CywbEs0s0PR9mv"],
+      [
+        "1QM-phLXdXOTr9GyBnSG6xcvc_Xjakx-4",
+        "1TJfJCFu4UYYZelh1XAfg771GRjTc0yL6"
+      ],
+      ["17_F1qjdEFuSEf1v6tAi48fhl8ulbR7h8"]
+    ],
+    project3: [
+      ["1ZUf1DUcHyekTSA1sLInDh4fyvBe0zXT6", "1xSFHjFLPo4tGRVcv7bYvD2GOtcaryPOe"],
+      ["1hg6GKJQ6AVX6LlavY6ldQp6_u0aKqL1z"],
+      ["1evi7kVu7cJvOTDtbSxQ2wCPmfPcw4Y2L", "1nOJZM0Y1PtKOLBOtKHikOfx8-570dR2f"],
+      ["1bdmhb7P9AdwacQIx6vash1TAN3VCUukZ", "1IIKE1wthwA4UTJj7SaqWXJyTEEDr8xlg"]
+    ],
+    project4: [
+      ["1zWgkIlRtelN-XRF746oi6vxPl5SWBj27"],
+      ["181IXmx079XMXOK7L8EXCZsFN3ldtoVsi"]
+    ],
+    project7: [
+      ["1mOA2eYGywCKwfP4xTlqPKIdwKpOWMxkp"],
+      [
+        "1-AunVv1WsFp3Ux3_xWNDrxVUY4ryNao0",
+        "1jG07YuJkl25QoBGoOSXlmxwrI3CplCP9",
+        "1d2iXdczpddxwffkejR2qjaooOD5uTgpo"
+      ],
+      ["1lpA05l2VDJxnPhtc1R6LQdceoYa-hYMF", "13EMAe547Y3JZc7VEIKZtEa1sxg3pJOK3"],
+      ["1tRerwb7Scf_3XZHoooJ15d4P2uS2r-_y", "18f4D9mmzd8k2tYKMW1i1dgq7hC7UtmtW"]
+    ],
+    project8: [["1iACyeWyYoTEI9qRMmRuIabeoYUmsw33M", "1WTY0aJwVR91Ot8ZXE6n2hTqbMq60CeFG"]]
+  };
   const videoExtensions = new Set(["mp4", "mov", "m4v", "webm", "ogv"]);
   const programmaticPauses = new WeakSet();
   let reelsMuted = true;
@@ -65,6 +105,112 @@
     }
 
     return button;
+  }
+
+  function driveThumbnailUrl(id, size = "w1600") {
+    return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
+  }
+
+  function createCareersPhoto(id, projectName, areaIndex, imageIndex) {
+    const frame = document.createElement("span");
+    const image = document.createElement("img");
+
+    frame.className = "careers-photo-item";
+    image.src = driveThumbnailUrl(id);
+    image.alt = `${projectName.toUpperCase()} area ${areaIndex + 1} image ${imageIndex + 1}`;
+    image.loading = "lazy";
+    image.decoding = "async";
+    frame.append(image);
+
+    return frame;
+  }
+
+  function renderCareersPhotos() {
+    Object.entries(careersMedia).forEach(([projectName, areaGroups]) => {
+      const slots = Array.from(
+        document.querySelectorAll(
+          `.careers-section[data-careers-section="${projectName}"] .careers-photo-slot`
+        )
+      );
+
+      areaGroups.forEach((imageIds, areaIndex) => {
+        const slot = slots[areaIndex];
+
+        if (!slot || !imageIds.length) {
+          return;
+        }
+
+        slot.replaceChildren(
+          ...imageIds.map((id, imageIndex) =>
+            createCareersPhoto(id, projectName, areaIndex, imageIndex)
+          )
+        );
+      });
+    });
+  }
+
+  function renderCareersRoleBadges() {
+    document.querySelectorAll(".careers-role").forEach((roleEl) => {
+      if (roleEl.querySelector(".careers-role-badge")) {
+        return;
+      }
+
+      const items = roleEl.textContent
+        .split(/\s*·\s*/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      roleEl.replaceChildren(
+        ...items.map((item) => {
+          const badge = document.createElement("span");
+          badge.className = "careers-role-badge";
+          badge.textContent = item;
+          return badge;
+        })
+      );
+    });
+  }
+
+  function groupCareersAreas() {
+    document.querySelectorAll(".careers-section").forEach((section) => {
+      if (section.querySelector(".careers-area")) {
+        return;
+      }
+
+      const photoStack = section.querySelector(".careers-photo-stack");
+      const copyStack = section.querySelector(".careers-copy-stack");
+
+      if (!copyStack) {
+        return;
+      }
+
+      const photoSlots = section.classList.contains("careers-info")
+        ? []
+        : Array.from(photoStack?.children || []).filter((child) =>
+            child.classList.contains("careers-photo-slot")
+          );
+      const copyBlocks = Array.from(copyStack.children).filter((child) =>
+        child.classList.contains("careers-copy-block")
+      );
+
+      const areas = copyBlocks.map((block, index) => {
+        const area = document.createElement("div");
+        const slot = photoSlots[index];
+
+        area.className = "careers-area";
+
+        if (slot) {
+          area.append(slot);
+        } else {
+          area.classList.add("has-no-photo");
+        }
+
+        area.append(block);
+        return area;
+      });
+
+      section.replaceChildren(...areas);
+    });
   }
 
   function buildThumbnailRail(railEl, dataItems, placeholderTotal, getThumbSrc, label) {
@@ -131,6 +277,26 @@
     );
 
     scrollArea.scrollTo({ top: targetTop, behavior: "smooth" });
+  }
+
+  function normalizePhotosTopPaddingScroll() {
+    const scrollArea = document.querySelector(".photos-pane .pane-scroll");
+
+    if (!scrollArea || !photosGrid || photosGrid.dataset.columns === "1") {
+      return;
+    }
+
+    const topOffset = parseFloat(getComputedStyle(photosGrid).paddingTop) || 0;
+
+    if (scrollArea.scrollTop > 0 && scrollArea.scrollTop <= topOffset + 2) {
+      scrollArea.scrollTop = 0;
+    }
+  }
+
+  function schedulePhotosTopPaddingScrollReset() {
+    requestAnimationFrame(normalizePhotosTopPaddingScroll);
+    window.setTimeout(normalizePhotosTopPaddingScroll, 120);
+    window.setTimeout(normalizePhotosTopPaddingScroll, 500);
   }
 
   function initRailSync(options) {
@@ -733,6 +899,9 @@
       (item) => (isVideoItem(item) ? item.poster : item.src),
       "Photo"
     );
+    renderCareersPhotos();
+    renderCareersRoleBadges();
+    groupCareersAreas();
     syncRailEdgePadding(reelsRail);
     syncRailEdgePadding(photosRail);
 
@@ -808,6 +977,10 @@
       paneEl?.classList.remove("is-loading");
       requestAnimationFrame(() => refreshAutoplay?.(paneEl));
 
+      if (paneName === "photos") {
+        schedulePhotosTopPaddingScrollReset();
+      }
+
       if (loader) {
         loader.classList.add("is-complete");
         window.setTimeout(() => loader.remove(), 250);
@@ -861,26 +1034,86 @@
   function enablePaneTabs() {
     const contentGrid = document.querySelector(".content-grid");
     const menuOptions = Array.from(document.querySelectorAll(".pane-menu-option"));
-    const backButton = document.querySelector(".pane-back");
+    const backButtons = Array.from(document.querySelectorAll("[data-pane-back]"));
+    const careersToggle = document.querySelector("[data-careers-toggle]");
+    const careersScroll = document.querySelector(".careers-scroll");
+    const careersIndexLinks = Array.from(document.querySelectorAll("[data-careers-target]"));
 
-    if (!contentGrid || !menuOptions.length) {
+    if (!contentGrid) {
       return;
     }
 
+    function setActivePane(paneName) {
+      contentGrid.dataset.activePane = paneName;
+      careersToggle?.setAttribute(
+        "aria-expanded",
+        paneName === "careers" ? "true" : "false"
+      );
+    }
+
+    function clearActivePane() {
+      delete contentGrid.dataset.activePane;
+      careersToggle?.setAttribute("aria-expanded", "false");
+    }
+
+    function scrollToCareersTarget(targetId, behavior = "smooth") {
+      const target = document.getElementById(targetId);
+
+      if (!target || !careersScroll) {
+        return;
+      }
+
+      const scrollRect = careersScroll.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const targetTop = Math.max(
+        careersScroll.scrollTop + targetRect.top - scrollRect.top,
+        0
+      );
+      const scrollBehavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : behavior;
+
+      careersScroll.scrollTo({ top: targetTop, behavior: scrollBehavior });
+    }
+
     menuOptions.forEach((option) => {
-      option.disabled = true;
+      const needsLoading =
+        option.dataset.pane === "reels" || option.dataset.pane === "photos";
+      option.disabled = needsLoading;
       option.addEventListener("click", () => {
         if (option.disabled) {
           return;
         }
 
-        contentGrid.dataset.activePane = option.dataset.pane;
+        setActivePane(option.dataset.pane);
       });
     });
 
-    backButton?.addEventListener("click", () => {
-      delete contentGrid.dataset.activePane;
+    careersToggle?.addEventListener("click", () => {
+      setActivePane("careers");
     });
+
+    careersIndexLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const targetId = link.dataset.careersTarget;
+
+        if (!targetId) {
+          return;
+        }
+
+        event.preventDefault();
+        setActivePane("careers");
+        requestAnimationFrame(() => {
+          scrollToCareersTarget(targetId, "smooth");
+          window.setTimeout(() => scrollToCareersTarget(targetId, "smooth"), 450);
+          window.setTimeout(() => scrollToCareersTarget(targetId, "smooth"), 1200);
+        });
+      });
+    });
+
+    backButtons.forEach((backButton) => backButton.addEventListener("click", () => {
+      clearActivePane();
+    }));
   }
 
   function enablePhotosZoom() {
@@ -900,10 +1133,11 @@
 
     function applyColumns(next) {
       const prevColumns = columns;
+      const isInitialApply = photosGrid.dataset.columns === undefined;
       columns = Math.min(Math.max(next, minColumns), maxColumns());
 
       const columnsChanged =
-        photosGrid.dataset.columns !== undefined && columns !== prevColumns;
+        !isInitialApply && columns !== prevColumns;
       let anchorCard = null;
 
       if (columnsChanged && scrollArea && photoCardElements.length) {
@@ -919,6 +1153,10 @@
 
       photosGrid.dataset.columns = String(columns);
       layoutPhotosColumns(columns);
+
+      if (isInitialApply) {
+        schedulePhotosTopPaddingScrollReset();
+      }
 
       if (anchorCard) {
         const topOffset = parseFloat(getComputedStyle(photosGrid).paddingTop) || 0;
