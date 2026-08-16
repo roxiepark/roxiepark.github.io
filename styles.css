@@ -933,6 +933,18 @@ a[x-apple-data-detectors]:visited {
 }
 
 @media (min-width: 761px) {
+  .careers-pane a:hover,
+  .careers-pane a:focus-visible {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.18em;
+  }
+
+  .careers-pane a[href^="tel"]:hover,
+  .careers-pane a[href^="tel"]:focus-visible {
+    text-decoration: underline !important;
+  }
+
   .careers-section:not(.careers-info) .careers-area {
     padding-top: 0;
     border-top: 0;
