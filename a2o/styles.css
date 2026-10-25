@@ -5,12 +5,10 @@
 }
 
 :root {
-  --pink: #FF3E9E;
-  --pink-deep: #f53673;
-  --white: #ffffff;
-  --white-soft: rgba(255, 255, 255, 0.78);
-  --white-faint: rgba(255, 255, 255, 0.22);
-  --shadow: rgba(138, 23, 65, 0.2);
+  --page-bg: #b7f3f9;
+  --text-color: #646465;
+  --text-soft: rgba(100, 100, 101, 0.78);
+  --text-faint: rgba(100, 100, 101, 0.22);
   --vh-unit: 1svh;
   --header-height: clamp(92px, calc(var(--vh-unit) * 13), 138px);
   --footer-height: clamp(112px, calc(var(--vh-unit) * 15), 150px);
@@ -18,8 +16,8 @@
     calc(var(--vh-unit) * 72),
     calc(var(--vh-unit) * 100 - var(--header-height) - var(--footer-height))
   );
-  --footer-logo-width: min(clamp(260px, 32vw, 500px), calc(100vw - 28px));
-  --footer-visual-height: calc(var(--footer-logo-width) * 22 / 228);
+  --footer-logo-width: min(clamp(130px, 16vw, 240px), calc(100vw - 28px));
+  --footer-visual-height: calc(var(--footer-logo-width) * 22 / 108.07);
   --footer-top: calc(var(--vh-unit) * 100 - 16px - var(--footer-visual-height));
   --content-top: calc(var(--vh-unit) * 51 - (var(--content-height) / 2));
   --content-gap-top: calc(var(--content-top) - var(--header-height));
@@ -48,8 +46,8 @@ body {
 body {
   margin: 0;
   overflow: hidden;
-  color: var(--white);
-  background: var(--pink);
+  color: var(--text-color);
+  background: var(--page-bg);
 }
 
 img,
@@ -63,7 +61,7 @@ video {
   inset: 0;
   min-width: 0;
   overflow: hidden;
-  background: var(--pink);
+  background: var(--page-bg);
 }
 
 .site-header {
@@ -88,7 +86,7 @@ video {
   font-size: var(--header-copy-size);
   line-height: var(--header-copy-line-height);
   font-weight: 600;
-  color: var(--white);
+  color: var(--text-color);
   overflow-wrap: anywhere;
   text-transform: uppercase;
 }
@@ -140,6 +138,7 @@ a[x-apple-data-detectors]:visited {
   display: block;
   width: clamp(46px, 7vw, 64px);
   height: auto;
+  filter: brightness(0) invert(39%);
 }
 
 .media-pane {
@@ -158,7 +157,7 @@ a[x-apple-data-detectors]:visited {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--pink);
+  background: var(--page-bg);
   opacity: 1;
   transition: opacity 0.2s ease;
 }
@@ -183,10 +182,10 @@ a[x-apple-data-detectors]:visited {
   transform: scaleY(1.25);
   background-image: linear-gradient(
     90deg,
-    var(--white) 0%,
-    var(--white) var(--progress),
-    rgba(255, 255, 255, 0.28) var(--progress),
-    rgba(255, 255, 255, 0.28) 100%
+    var(--text-color) 0%,
+    var(--text-color) var(--progress),
+    rgba(100, 100, 101, 0.28) var(--progress),
+    rgba(100, 100, 101, 0.28) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -200,7 +199,7 @@ a[x-apple-data-detectors]:visited {
   margin-top: -0.15em;
   font-size: 1.4rem;
   font-weight: 600;
-  color: var(--white);
+  color: var(--text-color);
 }
 
 .pane-loading.is-complete .pane-loading-label {
@@ -272,7 +271,7 @@ a[x-apple-data-detectors]:visited {
 
 .careers-section:not(.careers-info) .careers-area {
   padding-top: 12px;
-  border-top: 2px solid var(--white);
+  border-top: 2px solid var(--text-color);
 }
 
 .careers-info .careers-photo-stack {
@@ -307,7 +306,7 @@ a[x-apple-data-detectors]:visited {
 }
 
 .careers-copy-block {
-  color: var(--white);
+  color: var(--text-color);
 }
 
 .careers-info .careers-copy-block {
@@ -388,7 +387,7 @@ a[x-apple-data-detectors]:visited {
   display: block;
   max-width: 100%;
   padding: 0.36em 0.62em;
-  border: 1.5px solid var(--white);
+  border: 1.5px solid var(--text-color);
   border-radius: 999px;
   line-height: 1.25;
   overflow-wrap: anywhere;
@@ -413,7 +412,7 @@ a[x-apple-data-detectors]:visited {
   gap: 0.22rem;
   width: fit-content;
   max-width: 100%;
-  color: var(--white);
+  color: var(--text-color);
   text-decoration: none;
 }
 
@@ -478,7 +477,7 @@ a[x-apple-data-detectors]:visited {
   width: var(--scrollbar-width);
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(100, 100, 101, 0.3);
 }
 
 .custom-scrollbar-thumb {
@@ -488,7 +487,7 @@ a[x-apple-data-detectors]:visited {
   width: 100%;
   min-height: 36px;
   border-radius: inherit;
-  background: var(--white);
+  background: var(--text-color);
   transform: translateY(0);
   cursor: grab;
   touch-action: none;
@@ -549,7 +548,7 @@ a[x-apple-data-detectors]:visited {
   position: absolute;
   inset: 0;
   z-index: 2;
-  color: var(--white);
+  color: #fff;
   pointer-events: none;
 }
 
@@ -580,6 +579,7 @@ a[x-apple-data-detectors]:visited {
   width: 76%;
   height: 76%;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .reel-copy {
@@ -622,7 +622,7 @@ a[x-apple-data-detectors]:visited {
   justify-items: center;
   gap: 3px;
   padding: 0;
-  color: var(--white);
+  color: #fff;
   border: 0;
   background: transparent;
   filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.42));
@@ -655,7 +655,7 @@ a[x-apple-data-detectors]:visited {
   content: "";
   position: absolute;
   inset: 0;
-  background-color: var(--white);
+  background-color: #fff;
   -webkit-mask-image: var(--icon-mask);
   mask-image: var(--icon-mask);
   -webkit-mask-repeat: no-repeat;
@@ -667,7 +667,7 @@ a[x-apple-data-detectors]:visited {
 }
 
 .reel-action-heart.is-liked .reel-action-icon::after {
-  background-color: var(--pink);
+  background-color: var(--page-bg);
   -webkit-mask-image: url('../assets/icons/heart-filled.png');
   mask-image: url('../assets/icons/heart-filled.png');
 }
@@ -703,7 +703,7 @@ a[x-apple-data-detectors]:visited {
   content: "";
   border-top: clamp(12px, 1.4vw, 17px) solid transparent;
   border-bottom: clamp(12px, 1.4vw, 17px) solid transparent;
-  border-left: clamp(18px, 2vw, 26px) solid var(--white);
+  border-left: clamp(18px, 2vw, 26px) solid #fff;
 }
 
 .reel-play-indicator.is-visible {
@@ -717,12 +717,12 @@ a[x-apple-data-detectors]:visited {
   display: none;
   place-items: center;
   padding: 18px;
-  color: var(--white);
+  color: var(--text-color);
   font-size: 1.25rem;
   font-weight: 900;
   text-align: center;
   text-decoration: none;
-  background: rgba(245, 54, 115, 0.86);
+  background: rgba(183, 243, 249, 0.92);
 }
 
 .reel-card.is-unavailable .media-fallback,
@@ -740,7 +740,7 @@ a[x-apple-data-detectors]:visited {
   width: calc(100% - var(--scrollbar-space));
   height: 100%;
   border-radius: 8px;
-  background: var(--white);
+  background: #fff;
   overflow: hidden;
 }
 
@@ -818,7 +818,7 @@ a[x-apple-data-detectors]:visited {
 .placeholder-fill {
   display: grid;
   place-items: center;
-  color: var(--white);
+  color: var(--text-color);
   padding: 10px;
   font-size: 3.75rem;
   font-weight: 900;
@@ -827,8 +827,8 @@ a[x-apple-data-detectors]:visited {
   text-transform: uppercase;
   overflow-wrap: anywhere;
   background:
-    linear-gradient(var(--white-faint) 2px, transparent 2px),
-    linear-gradient(90deg, var(--white-faint) 2px, transparent 2px),
+    linear-gradient(var(--text-faint) 2px, transparent 2px),
+    linear-gradient(90deg, var(--text-faint) 2px, transparent 2px),
     rgba(255, 255, 255, 0.08);
   background-size: 24px 24px;
 }
@@ -876,7 +876,7 @@ a[x-apple-data-detectors]:visited {
   gap: clamp(4px, 0.45vw, 8px);
   height: 100%;
   padding: 0;
-  color: var(--white);
+  color: var(--text-color);
   border: 0;
   background: transparent;
   transform: translateY(-50%);
@@ -894,10 +894,10 @@ a[x-apple-data-detectors]:visited {
   transform: scaleY(1.25);
   background-image: linear-gradient(
     90deg,
-    var(--white) 0%,
-    var(--white) var(--progress),
-    rgba(255, 255, 255, 0.28) var(--progress),
-    rgba(255, 255, 255, 0.28) 100%
+    var(--text-color) 0%,
+    var(--text-color) var(--progress),
+    rgba(100, 100, 101, 0.28) var(--progress),
+    rgba(100, 100, 101, 0.28) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -909,6 +909,7 @@ a[x-apple-data-detectors]:visited {
   width: clamp(34px, calc(var(--footer-visual-height) * 0.98), 66px);
   height: auto;
   flex: 0 0 auto;
+  filter: brightness(0) invert(39%);
 }
 
 .footer-careers-open img {
@@ -928,7 +929,7 @@ a[x-apple-data-detectors]:visited {
 }
 
 .footer-careers-control:focus-visible {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--text-color);
   outline-offset: 6px;
 }
 
@@ -964,7 +965,7 @@ a[x-apple-data-detectors]:visited {
     left: 0;
     right: 0;
     top: calc(0px - var(--careers-area-half-gap));
-    border-top: 2px solid var(--white);
+    border-top: 2px solid var(--text-color);
   }
 
   .careers-section:not(.careers-info) .careers-area:first-child {
@@ -977,7 +978,7 @@ a[x-apple-data-detectors]:visited {
     left: 0;
     right: 0;
     top: calc(0px - var(--careers-section-half-gap));
-    border-top: 2px solid var(--white);
+    border-top: 2px solid var(--text-color);
   }
 
   .careers-section:not(.careers-info)
@@ -1090,7 +1091,7 @@ a[x-apple-data-detectors]:visited {
     top: calc(0px - var(--careers-section-half-gap));
     left: 0;
     right: 0;
-    border-top: 2px solid var(--white);
+    border-top: 2px solid var(--text-color);
   }
 
   .careers-area.has-no-photo .careers-copy-block {
@@ -1118,7 +1119,7 @@ a[x-apple-data-detectors]:visited {
     gap: 0.5rem;
     padding-top: var(--careers-info-divider-gap);
     padding-left: 0;
-    border-top: 2px solid var(--white);
+    border-top: 2px solid var(--text-color);
     border-left: 0;
     margin-top: var(--careers-info-divider-gap);
   }
@@ -1165,7 +1166,7 @@ a[x-apple-data-detectors]:visited {
     margin-top: -0.15em;
     font-size: 1.05rem;
     font-weight: 600;
-    color: var(--white);
+    color: var(--text-color);
   }
 
   .pane-menu-option:not(:disabled) .pane-menu-option-label {
@@ -1305,7 +1306,7 @@ a[x-apple-data-detectors]:visited {
   }
 
   .thumbnail-rail-item.is-active {
-    border-color: var(--white);
+    border-color: var(--text-color);
   }
 
   .thumbnail-rail-item img {
@@ -1321,7 +1322,7 @@ a[x-apple-data-detectors]:visited {
     justify-content: center;
     height: 100%;
     aspect-ratio: 3 / 4;
-    color: var(--white-soft);
+    color: var(--text-soft);
     font-size: 0.7rem;
     font-weight: 600;
   }
