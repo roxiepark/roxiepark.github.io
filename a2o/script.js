@@ -109,8 +109,18 @@
     return button;
   }
 
-  function driveThumbnailUrl(id, size = "w1600") {
-    return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
+  const transparentCareersImageIds = new Set([
+    "14apfaz1DKARoD6i1EZM5C0fFnQ9Qs5ZR",
+    "1ZUf1DUcHyekTSA1sLInDh4fyvBe0zXT6",
+    "1iACyeWyYoTEI9qRMmRuIabeoYUmsw33M",
+    "1mOA2eYGywCKwfP4xTlqPKIdwKpOWMxkp",
+    "1nOJZM0Y1PtKOLBOtKHikOfx8-570dR2f"
+  ]);
+
+  // Drive thumbnails get rate-limited on mobile, so serve local copies.
+  function careersImageUrl(id) {
+    const extension = transparentCareersImageIds.has(id) ? "png" : "jpg";
+    return `../assets/drive-images/${id}.${extension}`;
   }
 
   function createCareersPhoto(id, projectName, areaIndex, imageIndex) {
@@ -118,7 +128,7 @@
     const image = document.createElement("img");
 
     frame.className = "careers-photo-item";
-    image.src = driveThumbnailUrl(id);
+    image.src = careersImageUrl(id);
     image.alt = `${projectName.toUpperCase()} area ${areaIndex + 1} image ${imageIndex + 1}`;
     image.loading = "lazy";
     image.decoding = "async";
