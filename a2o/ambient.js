@@ -13,6 +13,30 @@
   let lastPress = -Infinity;
   let clouds = [];
   let presses = [];
+  let gradientSprite;
+
+  const reference = new Image();
+  reference.onload = () => {
+    // Keep only the supplied gradient. The screenshot's arrows stay outside this crop.
+    const sprite = document.createElement('canvas');
+    sprite.width = 640;
+    sprite.height = 640;
+    const spriteContext = sprite.getContext('2d');
+    spriteContext.drawImage(reference, 63, 95, 970, 970, 0, 0, 640, 640);
+    const pixels = spriteContext.getImageData(0, 0, 640, 640);
+    for (let y = 0; y < 640; y += 1) {
+      for (let x = 0; x < 640; x += 1) {
+        const distance = Math.hypot(x - 320, y - 320) / 320;
+        const edge = Math.max(0, Math.min(1, (distance - 0.84) / 0.16));
+        const smoothEdge = edge * edge * (3 - 2 * edge);
+        pixels.data[(y * 640 + x) * 4 + 3] = Math.round(255 * (1 - smoothEdge));
+      }
+    }
+    spriteContext.putImageData(pixels, 0, 0);
+    gradientSprite = sprite;
+    wake();
+  };
+  reference.src = 'gradient-reference.png';
 
   function resize() {
     width = innerWidth;
@@ -26,6 +50,12 @@
 
   // Radial color dissolves into the white page, with no hard outer edge.
   function bloom(x, y, radius, opacity) {
+    if (gradientSprite) {
+      ctx.globalAlpha = opacity;
+      ctx.drawImage(gradientSprite, x - radius, y - radius, radius * 2, radius * 2);
+      ctx.globalAlpha = 1;
+      return;
+    }
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
     gradient.addColorStop(0, `rgba(6, 176, 192, ${opacity})`);
     gradient.addColorStop(0.2, `rgba(48, 194, 207, ${opacity})`);
