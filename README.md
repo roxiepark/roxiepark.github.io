@@ -2,6 +2,12 @@
 
 Static portfolio page for reels, photos, and camcorder videos.
 
+The repository root serves the original SM Entertainment version at
+`https://roxiepark.github.io/`. The A2O Entertainment version lives in
+`a2o/` and serves `https://roxiepark.github.io/a2o/`. Both versions use the
+shared icons and videos in the root `assets/` directory; each has its own
+page, styles, scripts, and share preview.
+
 ## Media Setup
 
 The current media source is this Google Drive folder:
