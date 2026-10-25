@@ -27,9 +27,9 @@
     for (let y = 0; y < 640; y += 1) {
       for (let x = 0; x < 640; x += 1) {
         const distance = Math.hypot(x - 320, y - 320) / 320;
-        const edge = Math.max(0, Math.min(1, (distance - 0.84) / 0.16));
+        const edge = Math.max(0, Math.min(1, (distance - 0.48) / 0.5));
         const smoothEdge = edge * edge * (3 - 2 * edge);
-        pixels.data[(y * 640 + x) * 4 + 3] = Math.round(255 * (1 - smoothEdge));
+        pixels.data[(y * 640 + x) * 4 + 3] = Math.round(255 * (1 - smoothEdge) ** 1.25);
       }
     }
     spriteContext.putImageData(pixels, 0, 0);
