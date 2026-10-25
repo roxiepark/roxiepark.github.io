@@ -28,7 +28,8 @@
   function bloom(x, y, radius, opacity) {
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
     gradient.addColorStop(0, `rgba(30.6%, 67.4%, 74.1%, ${opacity})`);
-    gradient.addColorStop(0.45, `rgba(54.1%, 85.5%, 89%, ${opacity})`);
+    gradient.addColorStop(0.22, `rgba(54.1%, 85.5%, 89%, ${opacity})`);
+    gradient.addColorStop(0.5, `rgba(71.8%, 95.3%, 97.7%, ${opacity})`);
     gradient.addColorStop(0.75, `rgba(71.8%, 95.3%, 97.7%, ${opacity})`);
     gradient.addColorStop(1, 'rgba(71.8%, 95.3%, 97.7%, 0)');
     ctx.fillStyle = gradient;
