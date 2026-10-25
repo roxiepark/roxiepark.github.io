@@ -10,7 +10,9 @@
   let frame = 0;
   let previousTime = 0;
   let lastTrail = 0;
+  let lastPress = -Infinity;
   let clouds = [];
+  let presses = [];
 
   function resize() {
     width = innerWidth;
@@ -34,6 +36,15 @@
     ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
   }
 
+  function haze(x, y, radius, opacity, stretchX = 1, stretchY = 1, angle = 0) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.scale(stretchX, stretchY);
+    bloom(0, 0, radius, opacity);
+    ctx.restore();
+  }
+
   function draw(now) {
     frame = 0;
     const delta = Math.min((now - previousTime) || 16, 48);
@@ -43,20 +54,53 @@
 
     const age = now - pointer.lastSeen;
     const intensity = Math.max(0, 1 - Math.max(0, age - 800) / 2000);
-    // Broad, overlapping color clouds leave a soft particulate haze, without rings.
+    const radius = Math.min(235, width * 0.43);
+    // Color lingers behind the gesture and gently sinks as it diffuses.
     clouds = clouds.filter(cloud => now - cloud.born < cloud.life);
     for (const cloud of clouds) {
       const progress = (now - cloud.born) / cloud.life;
-      bloom(cloud.x, cloud.y, 110 + progress * 180, (1 - progress) ** 2 * 0.045);
+      haze(
+        cloud.x + cloud.driftX * progress,
+        cloud.y + cloud.driftY * progress + 55 * progress * progress,
+        radius * (0.48 + progress * 0.38),
+        (1 - progress) ** 2 * 0.23,
+        1 + cloud.stretch * (1 - progress), 1 + progress * 0.3, cloud.angle,
+      );
     }
     if (intensity > 0) {
-      const ease = 1 - Math.exp(-delta / 130);
-      pointer.x += (pointer.targetX - pointer.x) * ease;
-      pointer.y += (pointer.targetY - pointer.y) * ease;
-      bloom(pointer.x, pointer.y, Math.min(520, width * 0.75), intensity);
+      const dx = pointer.targetX - pointer.x;
+      const dy = pointer.targetY - pointer.y;
+      const distance = Math.hypot(dx, dy);
+      const stretch = Math.min(distance / 180, 0.65);
+      const angle = Math.atan2(dy, dx);
+      const ease = 1 - Math.exp(-delta / 180);
+      pointer.x += dx * ease;
+      pointer.y += dy * ease;
+      if (age < 120 && distance > 4 && now - lastTrail > 65) {
+        clouds.push({
+          x: pointer.x - dx * 0.18, y: pointer.y - dy * 0.18,
+          driftX: -dx * 0.16, driftY: -dy * 0.12,
+          stretch, angle, born: now, life: 1700,
+        });
+        clouds = clouds.slice(-24);
+        lastTrail = now;
+      }
+      const pressAge = now - lastPress;
+      const compression = pressAge < 700 ? Math.sin(pressAge / 700 * Math.PI) * 0.16 : 0;
+      haze(pointer.x, pointer.y, radius, intensity * 0.94,
+        1 + stretch + compression, 1 - stretch * 0.2 - compression, angle);
     }
 
-    if (intensity > 0 || clouds.length) wake();
+    // A click deforms the same soft color into a hanging plume: no rings or droplets.
+    presses = presses.filter(press => now - press.born < 1400);
+    for (const press of presses) {
+      const progress = (now - press.born) / 1400;
+      const flow = Math.sin(progress * Math.PI / 2);
+      haze(press.x, press.y + flow * radius * 0.45,
+        radius * (0.5 + flow * 0.2), (1 - progress) ** 1.5 * 0.55,
+        1.18 - flow * 0.3, 0.75 + flow * 0.85);
+    }
+    if (intensity > 0 || clouds.length || presses.length) wake();
   }
 
   function wake() {
@@ -77,19 +121,26 @@
 
   window.addEventListener('pointermove', event => {
     if (reducedMotion.matches || event.pointerType === 'touch') return;
-    const now = track(event);
-    if (now - lastTrail > 110) {
-      clouds.push({ x: event.clientX, y: event.clientY, born: now, life: 1500 });
-      clouds = clouds.slice(-16);
-      lastTrail = now;
-    }
+    track(event);
     wake();
   }, { passive: true });
+
+  window.addEventListener('pointerdown', event => {
+    if (reducedMotion.matches || !event.isPrimary || event.button !== 0) return;
+    const now = track(event);
+    if (now - lastPress < 100) return;
+    lastPress = now;
+    presses.push({ x: event.clientX, y: event.clientY, born: now });
+    presses = presses.slice(-6);
+    wake();
+  }, { passive: true, capture: true });
 
   function reset() {
     cancelAnimationFrame(frame);
     frame = 0;
     clouds = [];
+    presses = [];
+    lastPress = -Infinity;
     pointer.lastSeen = -Infinity;
     ctx.clearRect(0, 0, width, height);
   }
