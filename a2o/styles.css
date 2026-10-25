@@ -54,6 +54,7 @@ button {
 
 p,
 a,
+.careers-index-item,
 .reel-overlay {
   font-family:
     Inter, Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
@@ -158,7 +159,7 @@ a[x-apple-data-detectors]:visited {
   display: none;
   position: absolute;
   left: 0;
-  top: calc(1.05rem * 1.1 * 4 / 2);
+  top: calc(var(--header-copy-size) * var(--header-copy-line-height) * 4 / 2);
   z-index: 5;
   padding: 0;
   border: 0;
@@ -1049,7 +1050,7 @@ a[x-apple-data-detectors]:visited {
 
 @media (max-width: 760px) {
   :root {
-    --header-copy-size: 1.05rem;
+    --header-copy-size: min(0.95rem, 3.7vw);
   }
 
   .content-grid {
