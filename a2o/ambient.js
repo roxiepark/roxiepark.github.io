@@ -27,11 +27,10 @@
   // Radial color dissolves into the white page, with no hard outer edge.
   function bloom(x, y, radius, opacity) {
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-    gradient.addColorStop(0, `rgba(0, 173, 190, ${opacity})`);
-    gradient.addColorStop(0.28, `rgba(54, 200, 210, ${opacity * 0.94})`);
-    gradient.addColorStop(0.58, `rgba(139, 234, 239, ${opacity * 0.8})`);
-    gradient.addColorStop(0.82, `rgba(190, 247, 250, ${opacity * 0.42})`);
-    gradient.addColorStop(1, 'rgba(190, 247, 250, 0)');
+    gradient.addColorStop(0, `rgba(30.6%, 67.4%, 74.1%, ${opacity})`);
+    gradient.addColorStop(0.45, `rgba(54.1%, 85.5%, 89%, ${opacity})`);
+    gradient.addColorStop(0.75, `rgba(71.8%, 95.3%, 97.7%, ${opacity})`);
+    gradient.addColorStop(1, 'rgba(71.8%, 95.3%, 97.7%, 0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
   }
@@ -53,7 +52,8 @@
     if (reducedMotion.matches || document.hidden) return;
 
     const age = now - pointer.lastSeen;
-    const intensity = Math.max(0, 1 - Math.max(0, age - 800) / 2000);
+    const visible = Number.isFinite(pointer.lastSeen);
+    let moving = false;
     const radius = Math.min(235, width * 0.43);
     // Color lingers behind the gesture and gently sinks as it diffuses.
     clouds = clouds.filter(cloud => now - cloud.born < cloud.life);
@@ -67,15 +67,19 @@
         1 + cloud.stretch * (1 - progress), 1 + progress * 0.3, cloud.angle,
       );
     }
-    if (intensity > 0) {
+    if (visible) {
       const dx = pointer.targetX - pointer.x;
       const dy = pointer.targetY - pointer.y;
       const distance = Math.hypot(dx, dy);
-      const stretch = Math.min(distance / 180, 0.65);
+      const stretch = distance > 0.1 ? Math.min(distance / 180, 0.65) : 0;
       const angle = Math.atan2(dy, dx);
       const ease = 1 - Math.exp(-delta / 180);
       pointer.x += dx * ease;
       pointer.y += dy * ease;
+      if (distance <= 0.1) {
+        pointer.x = pointer.targetX;
+        pointer.y = pointer.targetY;
+      }
       if (age < 120 && distance > 4 && now - lastTrail > 65) {
         clouds.push({
           x: pointer.x - dx * 0.18, y: pointer.y - dy * 0.18,
@@ -87,7 +91,8 @@
       }
       const pressAge = now - lastPress;
       const compression = pressAge < 700 ? Math.sin(pressAge / 700 * Math.PI) * 0.16 : 0;
-      haze(pointer.x, pointer.y, radius, intensity * 0.94,
+      moving = distance > 0.1 || pressAge < 700;
+      haze(pointer.x, pointer.y, radius, 1,
         1 + stretch + compression, 1 - stretch * 0.2 - compression, angle);
     }
 
@@ -100,7 +105,8 @@
         radius * (0.5 + flow * 0.2), (1 - progress) ** 1.5 * 0.55,
         1.18 - flow * 0.3, 0.75 + flow * 0.85);
     }
-    if (intensity > 0 || clouds.length || presses.length) wake();
+    // Keep the last rendered gradient on screen without rendering idle frames.
+    if (moving || clouds.length || presses.length) wake();
   }
 
   function wake() {
@@ -109,7 +115,7 @@
 
   function track(event) {
     const now = performance.now();
-    if (now - pointer.lastSeen > 2800) {
+    if (!Number.isFinite(pointer.lastSeen)) {
       pointer.x = event.clientX;
       pointer.y = event.clientY;
     }
@@ -147,7 +153,14 @@
 
   window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('pagehide', reset);
-  document.addEventListener('visibilitychange', reset);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    } else {
+      wake();
+    }
+  });
   reducedMotion.addEventListener('change', reset);
   resize();
 })();
