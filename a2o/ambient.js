@@ -23,13 +23,23 @@
     sprite.height = 640;
     const spriteContext = sprite.getContext('2d');
     spriteContext.drawImage(reference, 63, 95, 970, 970, 0, 0, 640, 640);
-    const pixels = spriteContext.getImageData(0, 0, 640, 640);
+    const source = spriteContext.getImageData(0, 0, 640, 640);
+    const pixels = spriteContext.createImageData(640, 640);
     for (let y = 0; y < 640; y += 1) {
       for (let x = 0; x < 640; x += 1) {
         const distance = Math.hypot(x - 320, y - 320) / 320;
+        // Read farther from the reference center to narrow its dark core.
+        const sampleScale = distance > 0 ? Math.min(distance, 1) ** 0.75 / distance : 1;
+        const sampleX = Math.max(0, Math.min(639, Math.round(320 + (x - 320) * sampleScale)));
+        const sampleY = Math.max(0, Math.min(639, Math.round(320 + (y - 320) * sampleScale)));
+        const sourceOffset = (sampleY * 640 + sampleX) * 4;
+        const outputOffset = (y * 640 + x) * 4;
+        pixels.data[outputOffset] = source.data[sourceOffset];
+        pixels.data[outputOffset + 1] = source.data[sourceOffset + 1];
+        pixels.data[outputOffset + 2] = source.data[sourceOffset + 2];
         const edge = Math.max(0, Math.min(1, (distance - 0.48) / 0.5));
         const smoothEdge = edge * edge * (3 - 2 * edge);
-        pixels.data[(y * 640 + x) * 4 + 3] = Math.round(255 * (1 - smoothEdge) ** 1.25);
+        pixels.data[outputOffset + 3] = Math.round(255 * (1 - smoothEdge) ** 1.25);
       }
     }
     spriteContext.putImageData(pixels, 0, 0);
