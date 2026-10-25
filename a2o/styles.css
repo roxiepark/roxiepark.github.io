@@ -1,3 +1,10 @@
+@font-face {
+  font-family: Conthrax;
+  src: url("conthrax/Conthrax-SemiBold.otf") format("opentype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 @property --progress {
   syntax: "<percentage>";
   inherits: true;
@@ -30,11 +37,22 @@
   --header-copy-size: 1.4rem;
   --header-copy-line-height: 1.1;
   font-family:
-    Inter, Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+    Conthrax, Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+}
+
+p,
+a,
+.reel-overlay {
+  font-family:
+    Inter, Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
 }
 
 html,
@@ -93,6 +111,7 @@ video {
 .site-header p {
   max-width: 100%;
   margin: 0;
+  font-family: inherit;
   font-size: var(--header-copy-size);
   line-height: var(--header-copy-line-height);
   font-weight: 600;
@@ -168,7 +187,7 @@ a[x-apple-data-detectors]:visited {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--page-bg);
+  background: transparent;
   opacity: 1;
   transition: opacity 0.2s ease;
 }
@@ -186,7 +205,7 @@ a[x-apple-data-detectors]:visited {
 .pane-menu-option-title {
   display: block;
   font-weight: 900;
-  font-size: 23cqw;
+  font-size: 18cqw;
   line-height: 1;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -751,7 +770,7 @@ a[x-apple-data-detectors]:visited {
   width: calc(100% - var(--scrollbar-space));
   height: 100%;
   border-radius: 8px;
-  background: #fff;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -1164,7 +1183,7 @@ a[x-apple-data-detectors]:visited {
   }
 
   .pane-menu-option[data-pane="careers"] .pane-menu-option-title {
-    font-size: 23cqw;
+    font-size: 18cqw;
     transform: scaleX(0.87) scaleY(1.25);
   }
 
