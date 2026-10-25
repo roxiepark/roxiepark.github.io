@@ -112,7 +112,9 @@
         pointer.x = pointer.targetX;
         pointer.y = pointer.targetY;
       }
-      if (age < 120 && distance > 4 && now - lastTrail > 65) {
+      const pressAge = now - lastPress;
+      const pressing = pressAge < 950;
+      if (!pressing && age < 120 && distance > 4 && now - lastTrail > 65) {
         clouds.push({
           x: pointer.x - dx * 0.18, y: pointer.y - dy * 0.18,
           driftX: -dx * 0.16, driftY: -dy * 0.12,
@@ -121,21 +123,25 @@
         clouds = clouds.slice(-24);
         lastTrail = now;
       }
-      const pressAge = now - lastPress;
-      const compression = pressAge < 700 ? Math.sin(pressAge / 700 * Math.PI) * 0.16 : 0;
-      moving = distance > 0.1 || pressAge < 700;
+      moving = distance > 0.1 || pressing;
       haze(pointer.x, pointer.y, radius, 1,
-        1 + stretch + compression, 1 - stretch * 0.2 - compression, angle);
+        pressing ? 1 : 1 + stretch, pressing ? 1 : 1 - stretch * 0.2, angle);
     }
 
-    // A click deforms the same soft color into a hanging plume: no rings or droplets.
-    presses = presses.filter(press => now - press.born < 1400);
+    // A broad circular wash carries the darker center color toward the edge.
+    presses = presses.filter(press => now - press.born < 950);
     for (const press of presses) {
-      const progress = (now - press.born) / 1400;
-      const flow = Math.sin(progress * Math.PI / 2);
-      haze(press.x, press.y + flow * radius * 0.45,
-        radius * (0.5 + flow * 0.2), (1 - progress) ** 1.5 * 0.55,
-        1.18 - flow * 0.3, 0.75 + flow * 0.85);
+      const progress = (now - press.born) / 950;
+      const spread = 1 - (1 - progress) ** 2;
+      const waveRadius = radius * (0.18 + spread * 0.82);
+      const fade = 1 - progress;
+      const wash = ctx.createRadialGradient(press.x, press.y, 0, press.x, press.y, waveRadius);
+      wash.addColorStop(0, `rgba(0, 140, 156, ${fade * 0.5})`);
+      wash.addColorStop(0.45, `rgba(0, 140, 156, ${fade * 0.45})`);
+      wash.addColorStop(0.78, `rgba(0, 140, 156, ${fade * 0.24})`);
+      wash.addColorStop(1, 'rgba(0, 140, 156, 0)');
+      ctx.fillStyle = wash;
+      ctx.fillRect(press.x - waveRadius, press.y - waveRadius, waveRadius * 2, waveRadius * 2);
     }
     // Keep the last rendered gradient on screen without rendering idle frames.
     if (moving || clouds.length || presses.length) wake();
@@ -168,6 +174,7 @@
     const now = track(event);
     if (now - lastPress < 100) return;
     lastPress = now;
+    clouds = [];
     presses.push({ x: event.clientX, y: event.clientY, born: now });
     presses = presses.slice(-6);
     wake();
