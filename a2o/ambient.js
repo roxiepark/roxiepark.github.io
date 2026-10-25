@@ -39,7 +39,7 @@
         pixels.data[outputOffset + 2] = source.data[sourceOffset + 2];
         const edge = Math.max(0, Math.min(1, (distance - 0.48) / 0.5));
         const smoothEdge = edge * edge * (3 - 2 * edge);
-        pixels.data[outputOffset + 3] = Math.round(255 * (1 - smoothEdge) ** 1.25);
+        pixels.data[outputOffset + 3] = Math.round(255 * (1 - smoothEdge) ** 2);
       }
     }
     spriteContext.putImageData(pixels, 0, 0);
