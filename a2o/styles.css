@@ -48,6 +48,10 @@ button {
   font-family: inherit;
 }
 
+::selection {
+  background: rgb(183, 243, 249);
+}
+
 p,
 a,
 .reel-overlay {
