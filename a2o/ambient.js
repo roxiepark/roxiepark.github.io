@@ -27,11 +27,12 @@
   // Radial color dissolves into the white page, with no hard outer edge.
   function bloom(x, y, radius, opacity) {
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-    gradient.addColorStop(0, `rgba(30.6%, 67.4%, 74.1%, ${opacity})`);
-    gradient.addColorStop(0.22, `rgba(54.1%, 85.5%, 89%, ${opacity})`);
-    gradient.addColorStop(0.5, `rgba(71.8%, 95.3%, 97.7%, ${opacity})`);
-    gradient.addColorStop(0.75, `rgba(71.8%, 95.3%, 97.7%, ${opacity})`);
-    gradient.addColorStop(1, 'rgba(71.8%, 95.3%, 97.7%, 0)');
+    gradient.addColorStop(0, `rgba(6, 176, 192, ${opacity})`);
+    gradient.addColorStop(0.2, `rgba(48, 194, 207, ${opacity})`);
+    gradient.addColorStop(0.4, `rgba(96, 215, 224, ${opacity})`);
+    gradient.addColorStop(0.6, `rgba(134, 227, 234, ${opacity})`);
+    gradient.addColorStop(0.8, `rgba(175, 240, 244, ${opacity})`);
+    gradient.addColorStop(1, 'rgba(218, 247, 249, 0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
   }
@@ -74,7 +75,7 @@
       const distance = Math.hypot(dx, dy);
       const stretch = distance > 0.1 ? Math.min(distance / 180, 0.65) : 0;
       const angle = Math.atan2(dy, dx);
-      const ease = 1 - Math.exp(-delta / 180);
+      const ease = 1 - Math.exp(-delta / 55);
       pointer.x += dx * ease;
       pointer.y += dy * ease;
       if (distance <= 0.1) {
