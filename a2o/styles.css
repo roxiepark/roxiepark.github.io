@@ -548,7 +548,7 @@ a[x-apple-data-detectors]:visited {
   position: absolute;
   inset: 0;
   z-index: 2;
-  color: #fff;
+  color: var(--text-color);
   pointer-events: none;
 }
 
@@ -561,7 +561,9 @@ a[x-apple-data-detectors]:visited {
   align-items: flex-end;
   gap: 10px;
   min-width: 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .reel-avatar {
@@ -622,7 +624,7 @@ a[x-apple-data-detectors]:visited {
   justify-items: center;
   gap: 3px;
   padding: 0;
-  color: #fff;
+  color: var(--text-color);
   border: 0;
   background: transparent;
   filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.42));
@@ -676,6 +678,9 @@ a[x-apple-data-detectors]:visited {
   font-size: 0.7rem;
   font-weight: 400;
   line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .reel-play-indicator {
